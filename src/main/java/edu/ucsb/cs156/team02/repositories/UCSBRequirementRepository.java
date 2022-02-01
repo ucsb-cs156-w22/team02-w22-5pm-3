@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UCSBRequirementRepository extends CrudRepository<UCSBRequirement, Long> {
-  Iterable<UCSBRequirement> findBySubject(String subject);
+  Iterable<UCSBRequirement> findByRequirementCode(String code);
 }

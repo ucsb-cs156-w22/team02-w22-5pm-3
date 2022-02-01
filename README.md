@@ -1,8 +1,9 @@
 # starter-team02: dsre-v2
 
 Storybook is here:
+
 * Production: <https://ucsb-cs156-w22.github.io/team02-w22-5pm-3-docs>
-* QA:  <https://ucsb-cs156-w22.github.io/team02-w22-5pm-3-docs>
+* QA:  <https://ucsb-cs156-w22.github.io/team02-w22-5pm-3-docs-qa>
 
 The GitHub actions script to deploy the Storybook to QA requires some configuration; see [docs/github-actions.md](docs/github-actions.md) for details.
 
@@ -13,16 +14,16 @@ If these repos are not yet setup, see the setup steps in [`docs/storybook.md`](d
 Before running the application for the first time,
 you need to do the steps documented in [`docs/oauth.md`](docs/oauth.md).
 
-Otherwise, when you try to login for the first time, you 
+Otherwise, when you try to login for the first time, you
 will likely see an error such as:
 
 <img src="https://user-images.githubusercontent.com/1119017/149858436-c9baa238-a4f7-4c52-b995-0ed8bee97487.png" alt="Authorization Error; Error 401: invalid_client; The OAuth client was not found." width="400"/>
 
 # Getting Started on localhost
 
-* Open *two separate terminal windows*  
+* Open *two separate terminal windows*
 * In the first window, start up the backend with:
-  ``` 
+  ```
   mvn spring-boot:run
   ```
 * In the second window:
@@ -32,9 +33,9 @@ will likely see an error such as:
   npm start
   ```
 
-Then, the app should be available on <http://localhost:8080>
+Then, the app should be available on [http://localhost:8080](http://localhost:8080)
 
-If it doesn't work at first, e.g. you have a blank page on  <http://localhost:8080>, give it a minute and a few page refreshes.  Sometimes it takes a moment for everything to settle in.
+If it doesn't work at first, e.g. you have a blank page on  [http://localhost:8080](http://localhost:8080), give it a minute and a few page refreshes.  Sometimes it takes a moment for everything to settle in.
 
 If you see the following on localhost, make sure that you also have the frontend code running in a separate window.
 
@@ -44,14 +45,14 @@ Failed to connect to the frontend server... On Heroku, be sure that PRODUCTION i
 
 # Maven Commants
 
-| Command | Explanation |
-|-|-|
-| `mvn clean` | Removes `target` directory, which resets all compilation as well as the local H2 database |
-| `mvn compile` | Compile the application code |
-| `mvn test-compile` | Compile the test code |
-| `mvn test` | Run JUnit tests |
-| `mvn test jacoco:report` | Compute Test Case Coverage  for Java code|
-| `mvn test org.pitest:pitest-maven:mutationCoverage` | Run mutation testing for Java code  |
+| Command                                               | Explanation                                                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `mvn clean`                                         | Removes `target` directory, which resets all compilation as well as the local H2 database |
+| `mvn compile`                                       | Compile the application code                                                                |
+| `mvn test-compile`                                  | Compile the test code                                                                       |
+| `mvn test`                                          | Run JUnit tests                                                                             |
+| `mvn test jacoco:report`                            | Compute Test Case Coverage  for Java code                                                   |
+| `mvn test org.pitest:pitest-maven:mutationCoverage` | Run mutation testing for Java code                                                          |
 
 # Getting Started on Heroku
 
@@ -76,8 +77,7 @@ Failed to connect to the frontend server... On Heroku, be sure that PRODUCTION i
 
 To access the swagger API endpoints, use:
 
-* <http://localhost:8080/swagger-ui/index.html>
-
+* [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 # To run React Storybook
 
@@ -85,18 +85,17 @@ To access the swagger API endpoints, use:
 * use: npm run storybook
 * This should put the storybook on http://localhost:6006
 * Additional stories are added under frontend/src/stories
-
 * For documentation on React Storybook, see: https://storybook.js.org/
 
 # Accessing Database Console
 
-* On localhost only: <http://localhost:8080/h2-console>  See also: [docs/h2-console.md](docs/h2-console.md)
+* On localhost only: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)  See also: [docs/h2-console.md](docs/h2-console.md)
 * On Heroku, with CLI:
-  - Use: `heroku psql --app app-name-here` 
-  - Note that this requires that you have the psql CLI tool installed on your system.  
+  - Use: `heroku psql --app app-name-here`
+  - Note that this requires that you have the psql CLI tool installed on your system.
   - This does work on CSIL, but you may need `heroku login -i` in order to login on CSIL
   - Example:
-   
+
     ```
     [pconrad@csilvm-03 ~]$ heroku psql --app starter-team02
     ›   Warning: heroku update available from 7.59.1 to 7.59.2.
@@ -107,11 +106,10 @@ To access the swagger API endpoints, use:
 
     starter-team02::DATABASE=> 
     ```
-* On Heroku, without CLI: 
+* On Heroku, without CLI:
   - Upper right of dashboard, select "More" then "Run Console"
-    
-    <img alt="Heroku Dashboard; More; Run Console" src="https://user-images.githubusercontent.com/1119017/150204550-a1027ab8-6ce7-4770-b566-a43928f5c3a0.png" width="300" />
-  - Enter `psql $DATABASE_URL` and click `Run`
-   
-    <img alt="Enter psql $DATABASE_URL and click Run" src="https://user-images.githubusercontent.com/1119017/150206174-43193825-1afd-49f4-aeaf-cfadf0c0c6f3.png" width="400" />
 
+    `<img alt="Heroku Dashboard; More; Run Console" src="https://user-images.githubusercontent.com/1119017/150204550-a1027ab8-6ce7-4770-b566-a43928f5c3a0.png" width="300" />`
+  - Enter `psql $DATABASE_URL` and click `Run`
+
+    `<img alt="Enter psql $DATABASE_URL and click Run" src="https://user-images.githubusercontent.com/1119017/150206174-43193825-1afd-49f4-aeaf-cfadf0c0c6f3.png" width="400" />`

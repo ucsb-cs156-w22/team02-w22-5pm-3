@@ -1,9 +1,9 @@
 package edu.ucsb.cs156.team02.controllers;
 
-import edu.ucsb.cs156.team02.entities.Todo;
+import edu.ucsb.cs156.team02.entities.CollegiateSubreddit;
 import edu.ucsb.cs156.team02.entities.User;
 import edu.ucsb.cs156.team02.models.CurrentUser;
-import edu.ucsb.cs156.team02.repositories.TodoRepository;
+import edu.ucsb.cs156.team02.repositories.CollegiateSubredditRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Optional;
 
-public class CollegiateSubredditController {
-  
+
+@Api(description = "CollegiateSubreddit")
+@RequestMapping("/api/collegiateSubreddits")
+@RestController
+@Slf4j
+public class CollegiateSubredditController extends ApiController{
+    
+    @Autowired
+    CollegiateSubredditRepository collegiateSubredditRepository;
+
+    @Autowired
+    ObjectMapper mapper;
+
+
+    @ApiOperation(value = "List this user's collegiateSubreddit")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/all")
+    public Iterable<CollegiateSubreddit> getCollegiateSubreddit() {
+        loggingService.logMethod();
+        Iterable<CollegiateSubreddit> collegiateSubreddit = CollegiateSubredditRepository.findAll();
+        return todos;
+    }
 }

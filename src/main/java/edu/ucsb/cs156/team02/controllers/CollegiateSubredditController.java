@@ -46,7 +46,7 @@ public class CollegiateSubredditController extends ApiController{
     @GetMapping("/all")
     public Iterable<CollegiateSubreddit> getCollegiateSubreddit() {
         loggingService.logMethod();
-        Iterable<CollegiateSubreddit> collegiateSubreddit = CollegiateSubredditRepository.findAll();
-        return todos;
+        Iterable<CollegiateSubreddit> collegiateSubreddit = collegiateSubredditRepository.findAll();
+        return collegiateSubreddit;
     }
 }

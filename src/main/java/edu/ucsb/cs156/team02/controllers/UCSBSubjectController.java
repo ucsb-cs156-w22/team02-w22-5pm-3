@@ -1,5 +1,7 @@
 package edu.ucsb.cs156.team02.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.team02.entities.Todo;
 import edu.ucsb.cs156.team02.entities.UCSBSubject;
 import edu.ucsb.cs156.team02.models.CurrentUser;
 import edu.ucsb.cs156.team02.repositories.UCSBSubjectRepository;
@@ -36,8 +38,8 @@ public class UCSBSubjectController extends ApiController {
     @Autowired
     UCSBSubjectRepository ucsbSubjectRepository;
 
-//    @Autowired
-//    ObjectMapper mapper;
+    @Autowired
+    ObjectMapper mapper;
 
     @ApiOperation(value = "List all UCSB Subjects")
     @GetMapping("/all")
@@ -55,7 +57,7 @@ public class UCSBSubjectController extends ApiController {
 //        TodoOrError toe = new TodoOrError(id);
 //
 //        toe = doesTodoExist(toe);
-//        if (toe.error != null) {
+//        if (toe.error != null) {1
 //            return toe.error;
 //        }
 //        toe = doesTodoBelongToCurrentUser(toe);
@@ -95,18 +97,18 @@ public class UCSBSubjectController extends ApiController {
             @ApiParam("relatedDeptCode") @RequestParam String relatedDeptCode,
             @ApiParam("inactive") @RequestParam boolean inactive) {
         loggingService.logMethod();
-        CurrentUser currentUser = getCurrentUser();
         log.info("UCSB subject /post called: subjectCode={}, subjectTranslation={}, " +
                         "deptCode={}, collegeCode={}, relatedDeptCode={}, inactive={}",
                 subjectCode, subjectTranslation, deptCode, collegeCode, relatedDeptCode, inactive);
-        final var savedUCSBSubject = new UCSBSubject();
-        savedUCSBSubject.setSubjectCode(subjectCode);
-        savedUCSBSubject.setSubjectTranslation(subjectTranslation);
-        savedUCSBSubject.setDeptCode(deptCode);
-        savedUCSBSubject.setCollegeCode(collegeCode);
-        savedUCSBSubject.setRelatedDeptCode(relatedDeptCode);
-        savedUCSBSubject.setInactive(inactive);
-        return savedUCSBSubject;
+        final var ucsbSubject = new UCSBSubject();
+        ucsbSubject.setSubjectCode(subjectCode);
+        ucsbSubject.setSubjectTranslation(subjectTranslation);
+        ucsbSubject.setDeptCode(deptCode);
+        ucsbSubject.setCollegeCode(collegeCode);
+        ucsbSubject.setRelatedDeptCode(relatedDeptCode);
+        ucsbSubject.setInactive(inactive);
+
+        return ucsbSubjectRepository.save(ucsbSubject);
     }
 
 //    @ApiOperation(value = "Delete a Todo owned by this user")

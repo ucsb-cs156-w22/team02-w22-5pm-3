@@ -34,6 +34,17 @@ import java.util.Optional;
 @Slf4j
 public class CollegiateSubredditController extends ApiController{
     
+    public class CollegiateSubredditOrError {
+        Long id;
+        CollegiateSubreddit subreddit;
+        ResponseEntity<String> error;
+
+        public CollegiateSubredditOrError(Long id) {
+            this.id = id;
+        }
+    }
+
+
     @Autowired
     CollegiateSubredditRepository collegiateSubredditRepository;
 
@@ -42,7 +53,7 @@ public class CollegiateSubredditController extends ApiController{
 
 
     @ApiOperation(value = "List this user's collegiateSubreddit")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    // @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<CollegiateSubreddit> getCollegiateSubreddit() {
         loggingService.logMethod();
@@ -51,15 +62,15 @@ public class CollegiateSubredditController extends ApiController{
     }
 
     @ApiOperation(value = "Create a new subreddit")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    // @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public CollegiateSubreddit postCollegiateSubreddit(
             @ApiParam("name") @RequestParam String name,
             @ApiParam("location") @RequestParam String location,
             @ApiParam("subreddit") @RequestParam String subreddit) {
         loggingService.logMethod();
-        CurrentUser currentUser = getCurrentUser();
-        log.info("currentUser={}", currentUser);
+        // CurrentUser currentUser = getCurrentUser();
+        // log.info("currentUser={}", currentUser);
 
         CollegiateSubreddit collegiateSubreddit = new CollegiateSubreddit();
         collegiateSubreddit.setName(name);

@@ -92,7 +92,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         // assert
         verify(collegiateSubredditRepository, times(1)).findById(eq(7L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("collegiateSubreddit with id 7 not found", responseString);
+        assertEquals("requirement with id 7 not found", responseString);
     }
 
 
@@ -137,6 +137,6 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         // assert
         verify(collegiateSubredditRepository, times(1)).findById(eq(7L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("collegiateSubreddit with id 7 not found", responseString);
+        assertEquals("requirement with id 7 not found", responseString);
     }
 }

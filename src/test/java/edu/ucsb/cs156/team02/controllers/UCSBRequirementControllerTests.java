@@ -4,7 +4,6 @@ import edu.ucsb.cs156.team02.repositories.UCSBRequirementRepository;
 import edu.ucsb.cs156.team02.testconfig.TestConfig;
 import edu.ucsb.cs156.team02.ControllerTestCase;
 import edu.ucsb.cs156.team02.entities.UCSBRequirement;
-import edu.ucsb.cs156.team02.entities.User;
 import edu.ucsb.cs156.team02.repositories.UserRepository;
 
 import org.junit.jupiter.api.Test;

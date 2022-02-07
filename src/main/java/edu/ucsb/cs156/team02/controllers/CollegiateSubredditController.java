@@ -79,4 +79,18 @@ public class CollegiateSubredditController extends ApiController{
         CollegiateSubreddit savedcollegiateSubreddit = collegiateSubredditRepository.save(collegiateSubreddit);
         return savedcollegiateSubreddit;
     }
+
+    public CollegiateSubredditOrError doesCollegiateSubredditExist(CollegiateSubredditOrError roe) {
+
+        Optional<CollegiateSubreddit> optionalReq = CollegiateSubredditRepository.findById(roe.id);
+
+        if (optionalReq.isEmpty()) {
+            roe.error = ResponseEntity
+                    .badRequest()
+                    .body(String.format("requirement with id %d not found", roe.id));
+        } else {
+            roe.subreddit = optionalReq.get();
+        }
+        return roe;
+    }
 }

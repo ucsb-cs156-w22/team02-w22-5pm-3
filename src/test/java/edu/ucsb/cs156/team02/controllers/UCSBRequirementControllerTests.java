@@ -73,8 +73,6 @@ public class UCSBRequirementControllerTests extends ControllerTestCase {
 
         // arrange
 
-        User u = currentUserService.getCurrentUser().getUser();
-
         when(ucsbRequirementRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
         // act

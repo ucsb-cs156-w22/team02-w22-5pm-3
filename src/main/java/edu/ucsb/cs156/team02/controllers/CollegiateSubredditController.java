@@ -34,15 +34,15 @@ import java.util.Optional;
 @Slf4j
 public class CollegiateSubredditController extends ApiController{
     
-    public class CollegiateSubredditOrError {
-        Long id;
-        CollegiateSubreddit subreddit;
-        ResponseEntity<String> error;
+    // public class CollegiateSubredditOrError {
+    //     Long id;
+    //     CollegiateSubreddit subreddit;
+    //     ResponseEntity<String> error;
 
-        public CollegiateSubredditOrError(Long id) {
-            this.id = id;
-        }
-    }
+    //     public CollegiateSubredditOrError(Long id) {
+    //         this.id = id;
+    //     }
+    // }
 
     @Autowired
     CollegiateSubredditRepository collegiateSubredditRepository;

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(controllers = UCSBSubjectsController.class)
+@WebMvcTest(controllers = UCSBSubjectController.class)
 @Import(TestConfig.class)
 public class UCSBSubjectsControllerTests extends ControllerTestCase {
 

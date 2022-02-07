@@ -78,36 +78,4 @@ public class CollegiateSubredditController extends ApiController{
         CollegiateSubreddit savedcollegiateSubreddit = collegiateSubredditRepository.save(collegiateSubreddit);
         return savedcollegiateSubreddit;
     }
-
-    @ApiOperation(value = "Get a single subreddit (if it belongs to current user)")
-    // @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("")
-    public ResponseEntity<String> getCollegiateSubredditById(
-            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
-        loggingService.logMethod();
-        CollegiateSubredditOrError toe = new CollegiateSubredditOrError(id);
-
-        toe = doesCollegiateSubredditExist(toe);
-        if (toe.error != null) {
-            return toe.error;
-        }
-        
-        String body = mapper.writeValueAsString(toe.subreddit);
-        return ResponseEntity.ok().body(body);
-    }
-
-
-    public CollegiateSubredditOrError doesCollegiateSubredditExist(CollegiateSubredditOrError toe) {
-
-        Optional<CollegiateSubreddit> optionalReq = collegiateSubredditRepository.findById(toe.id);
-
-        if (optionalReq.isEmpty()) {
-            toe.error = ResponseEntity
-                    .badRequest()
-                    .body(String.format("requirement with id %d not found", toe.id));
-        } else {
-            toe.subreddit = optionalReq.get();
-        }
-        return toe;
-    }
 }

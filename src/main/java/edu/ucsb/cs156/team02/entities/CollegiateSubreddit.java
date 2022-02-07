@@ -27,12 +27,6 @@ public class CollegiateSubreddit {
   // Only the user_id is stored in the table, and through it we
   // can access the user's details
 
-  // @ManyToOne
-  // @JoinColumn(name = "user_id")
-  // private User user;
-  // private String title;
-  // private String details;
-  // private boolean done;
   private String name;
   private String location;
   private String subreddit;

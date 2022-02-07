@@ -48,6 +48,28 @@ public class CollegiateSubredditController extends ApiController{
         loggingService.logMethod();
         Iterable<CollegiateSubreddit> collegiateSubreddit = collegiateSubredditRepository.findAll();
         return collegiateSubreddit;
+<<<<<<< HEAD
+=======
+    }
+
+    @ApiOperation(value = "Create a new subreddit")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/post")
+    public CollegiateSubreddit postCollegiateSubreddit(
+            @ApiParam("name") @RequestParam String name,
+            @ApiParam("location") @RequestParam String location,
+            @ApiParam("subreddit") @RequestParam String subreddit) {
+        loggingService.logMethod();
+        CurrentUser currentUser = getCurrentUser();
+        log.info("currentUser={}", currentUser);
+
+        CollegiateSubreddit collegiateSubreddit = new CollegiateSubreddit();
+        collegiateSubreddit.setName(name);
+        collegiateSubreddit.setLocation(location);
+        collegiateSubreddit.setSubreddit(subreddit);
+        CollegiateSubreddit savedcollegiateSubreddit = collegiateSubredditRepository.save(collegiateSubreddit);
+        return savedcollegiateSubreddit;
+>>>>>>> b108b58011aea9e33480bf365172bf5d3c8390a3
     }
 
 

@@ -79,6 +79,7 @@ public class CollegiateSubredditController extends ApiController{
         return savedcollegiateSubreddit;
     }
 
+<<<<<<< HEAD
 
     @ApiOperation(value = "Get a single subreddit (if it belongs to current user)")
     // @PreAuthorize("hasRole('ROLE_USER')")
@@ -115,4 +116,19 @@ public class CollegiateSubredditController extends ApiController{
 
 
     
+=======
+    public CollegiateSubredditOrError doesCollegiateSubredditExist(CollegiateSubredditOrError roe) {
+
+        Optional<CollegiateSubreddit> optionalReq = CollegiateSubredditRepository.findById(roe.id);
+
+        if (optionalReq.isEmpty()) {
+            roe.error = ResponseEntity
+                    .badRequest()
+                    .body(String.format("requirement with id %d not found", roe.id));
+        } else {
+            roe.subreddit = optionalReq.get();
+        }
+        return roe;
+    }
+>>>>>>> 5b670a527e9d9b6435200c895031dd697de20e5e
 }

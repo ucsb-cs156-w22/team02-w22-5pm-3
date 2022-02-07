@@ -90,9 +90,10 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         mockMvc.perform(post("/api/ucsbSubjects/post"))
                 .andExpect(status().is(403));
     }
-
-    // Tests with mocks for database actions
+}
 /*
+    // Tests with mocks for database actions
+
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_ucsbSubjects__user_logged_in__returns_a_ucsbSubject_that_exists() throws Exception {

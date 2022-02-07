@@ -42,7 +42,6 @@ public class UCSBRequirementControllerTests extends ControllerTestCase {
 
         // arrange
 
-        User u = currentUserService.getCurrentUser().getUser();
         UCSBRequirement req1 = UCSBRequirement.builder()
                 .requirementCode("X")
                 .requirementTranslation("X")

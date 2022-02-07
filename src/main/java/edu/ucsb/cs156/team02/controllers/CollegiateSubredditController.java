@@ -34,6 +34,17 @@ import java.util.Optional;
 @Slf4j
 public class CollegiateSubredditController extends ApiController{
 
+
+    public class  CollegiateSubredditOrError{
+        Long id;
+        CollegiateSubreddit collegiateSubreddit;
+        ResponseEntity<String> error;
+
+        public CollegiateSubredditOrError(Long id) {
+            this.id = id;
+        }
+    }
+
     @Autowired
     CollegiateSubredditRepository collegiateSubredditRepository;
 
@@ -48,8 +59,6 @@ public class CollegiateSubredditController extends ApiController{
         loggingService.logMethod();
         Iterable<CollegiateSubreddit> collegiateSubreddit = collegiateSubredditRepository.findAll();
         return collegiateSubreddit;
-<<<<<<< HEAD
-=======
     }
 
     @ApiOperation(value = "Create a new subreddit")
@@ -69,9 +78,10 @@ public class CollegiateSubredditController extends ApiController{
         collegiateSubreddit.setSubreddit(subreddit);
         CollegiateSubreddit savedcollegiateSubreddit = collegiateSubredditRepository.save(collegiateSubreddit);
         return savedcollegiateSubreddit;
->>>>>>> b108b58011aea9e33480bf365172bf5d3c8390a3
     }
 
+
+    
 
     
 }

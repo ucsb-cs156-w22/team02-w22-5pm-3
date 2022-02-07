@@ -11,4 +11,5 @@ public interface CollegiateSubredditRepository extends CrudRepository<Collegiate
   Optional<CollegiateSubreddit> findByName(String name);
   Optional<CollegiateSubreddit> findBySubreddit(String subreddit);
   Optional<CollegiateSubreddit> findById(Long id);
+
 }

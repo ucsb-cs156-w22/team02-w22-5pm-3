@@ -33,11 +33,10 @@ import java.util.Optional;
 @RestController
 @Slf4j
 public class CollegiateSubredditController extends ApiController{
-
-
-    public class  CollegiateSubredditOrError{
+    
+    public class CollegiateSubredditOrError {
         Long id;
-        CollegiateSubreddit collegiateSubreddit;
+        CollegiateSubreddit subreddit;
         ResponseEntity<String> error;
 
         public CollegiateSubredditOrError(Long id) {
@@ -53,7 +52,7 @@ public class CollegiateSubredditController extends ApiController{
 
 
     @ApiOperation(value = "List this user's collegiateSubreddit")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    // @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<CollegiateSubreddit> getCollegiateSubreddit() {
         loggingService.logMethod();
@@ -62,15 +61,15 @@ public class CollegiateSubredditController extends ApiController{
     }
 
     @ApiOperation(value = "Create a new subreddit")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    // @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public CollegiateSubreddit postCollegiateSubreddit(
             @ApiParam("name") @RequestParam String name,
             @ApiParam("location") @RequestParam String location,
             @ApiParam("subreddit") @RequestParam String subreddit) {
         loggingService.logMethod();
-        CurrentUser currentUser = getCurrentUser();
-        log.info("currentUser={}", currentUser);
+        // CurrentUser currentUser = getCurrentUser();
+        // log.info("currentUser={}", currentUser);
 
         CollegiateSubreddit collegiateSubreddit = new CollegiateSubreddit();
         collegiateSubreddit.setName(name);
@@ -81,7 +80,39 @@ public class CollegiateSubredditController extends ApiController{
     }
 
 
-    
+    @ApiOperation(value = "Get a single subreddit (if it belongs to current user)")
+    // @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public ResponseEntity<String> getCollegiateSubredditById(
+            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
+        loggingService.logMethod();
+        CollegiateSubredditOrError toe = new CollegiateSubredditOrError(id);
+
+        toe = doesCollegiateSubredditExist(toe);
+        if (toe.error != null) {
+            return toe.error;
+        }
+        
+        String body = mapper.writeValueAsString(toe.subreddit);
+        return ResponseEntity.ok().body(body);
+    }
+
+
+    public CollegiateSubredditOrError doesCollegiateSubredditExist(CollegiateSubredditOrError toe) {
+
+        Optional<CollegiateSubreddit> optionalReq = collegiateSubredditRepository.findById(toe.id);
+
+        if (optionalReq.isEmpty()) {
+            toe.error = ResponseEntity
+                    .badRequest()
+                    .body(String.format("requirement with id %d not found", toe.id));
+        } else {
+            toe.subreddit = optionalReq.get();
+        }
+        return toe;
+    }
+
+
 
     
 }

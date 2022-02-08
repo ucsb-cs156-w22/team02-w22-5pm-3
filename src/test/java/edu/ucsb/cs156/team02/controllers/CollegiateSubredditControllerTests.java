@@ -166,7 +166,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         // assert
         verify(collegiateSubredditRepository, times(1)).findById(eq(7L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("requirement with id 7 not found", responseString);
+        assertEquals("subreddit with id 7 not found", responseString);
     }
 
 
@@ -211,7 +211,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         // assert
         verify(collegiateSubredditRepository, times(1)).findById(eq(7L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("requirement with id 7 not found", responseString);
+        assertEquals("subreddit with id 7 not found", responseString);
     }
 
 
@@ -259,9 +259,43 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
 
         // assert
         verify(collegiateSubredditRepository, times(1)).findById(10L);
-        verify(collegiateSubredditRepository, times(1)).save(updatedCollegiateSubreddit); // should be saved with correct user
+        verify(collegiateSubredditRepository, times(1)).save(updatedCollegiateSubreddit); 
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
+    }
+
+
+    @Test
+    public void api_collegiateSubreddit__put_not_exist() throws Exception {
+        
+        // arrange
+
+        CollegiateSubreddit updatedCollegiateSubreddit = CollegiateSubreddit.builder()
+                                                                            .name("Name1")
+                                                                            .location("Location1")
+                                                                            .subreddit("Subreddit1")
+                                                                            .id(10L)
+                                                                            .build();
+
+        
+
+        String requestBody = mapper.writeValueAsString(updatedCollegiateSubreddit);
+
+        when(collegiateSubredditRepository.findById(eq(10L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/collegiateSubreddits?id=10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(collegiateSubredditRepository, times(1)).findById(10L);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals("subreddit with id 10 not found", responseString);
     }
 
 }

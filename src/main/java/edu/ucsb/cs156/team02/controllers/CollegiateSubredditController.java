@@ -104,7 +104,7 @@ public class CollegiateSubredditController extends ApiController{
         if (optionalReq.isEmpty()) {
             toe.error = ResponseEntity
                     .badRequest()
-                    .body(String.format("requirement with id %d not found", toe.id));
+                    .body(String.format("subreddit with id %d not found", toe.id));
         } else {
             toe.subreddit = optionalReq.get();
         }

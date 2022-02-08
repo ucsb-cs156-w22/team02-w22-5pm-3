@@ -1,6 +1,8 @@
 package edu.ucsb.cs156.team02.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Optional;
 import edu.ucsb.cs156.team02.entities.Todo;
 import edu.ucsb.cs156.team02.entities.UCSBSubject;
 import edu.ucsb.cs156.team02.models.CurrentUser;
@@ -9,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +28,14 @@ public class UCSBSubjectController extends ApiController {
 //     * along with the error messages pertaining to those situations. It
 //     * bundles together the state needed for those checks.
 //     */
-//    public class TodoOrError {
-//        Long id;
-//        Todo todo;
-//        ResponseEntity<String> error;
-//
-//        public TodoOrError(Long id) {
-//            this.id = id;
-//        }
-//    }
+   public class UCSBSubjectOrError {
+       Long id;
+       UCSBSubject ucsbSubject;
+       ResponseEntity<String> error;
+       public UCSBSubjectOrError(Long id) {
+           this.id = id;
+       }
+   }
 
     @Autowired
     UCSBSubjectRepository ucsbSubjectRepository;
@@ -48,43 +50,43 @@ public class UCSBSubjectController extends ApiController {
         return ucsbSubjectRepository.findAll();
     }
 
-//    @ApiOperation(value = "Get a single todo (if it belongs to current user)")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @GetMapping("")
-//    public ResponseEntity<String> getTodoById(
-//            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
-//        loggingService.logMethod();
-//        TodoOrError toe = new TodoOrError(id);
-//
-//        toe = doesTodoExist(toe);
-//        if (toe.error != null) {1
-//            return toe.error;
-//        }
-//        toe = doesTodoBelongToCurrentUser(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//        String body = mapper.writeValueAsString(toe.todo);
-//        return ResponseEntity.ok().body(body);
-//    }
-//
-//    @ApiOperation(value = "Get a single todo (no matter who it belongs to, admin only)")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @GetMapping("/admin")
-//    public ResponseEntity<String> getTodoById_admin(
-//            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
-//        loggingService.logMethod();
-//
-//        TodoOrError toe = new TodoOrError(id);
-//
-//        toe = doesTodoExist(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//
-//        String body = mapper.writeValueAsString(toe.todo);
-//        return ResponseEntity.ok().body(body);
-//    }
+   @ApiOperation(value = "Get a single UCSBSubject (if it belongs to current user)")
+   @PreAuthorize("hasRole('ROLE_USER')")
+   @GetMapping("")
+   public ResponseEntity<String> getUCSBSubjectById(
+           @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
+       loggingService.logMethod();
+       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+
+       toe = doesUCSBSubjectExist(toe);
+       if (toe.error != null) {
+           return toe.error;
+       }
+       toe = doesUCSBSubjectBelongToCurrentUser(toe);
+       if (toe.error != null) {
+           return toe.error;
+       }
+       String body = mapper.writeValueAsString(toe.ucsbSubject);
+       return ResponseEntity.ok().body(body);
+   }
+
+   @ApiOperation(value = "Get a single todo (no matter who it belongs to, admin only)")
+   @PreAuthorize("hasRole('ROLE_ADMIN')")
+   @GetMapping("/admin")
+   public ResponseEntity<String> getUCSBSubjectById_admin(
+           @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
+       loggingService.logMethod();
+
+       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+
+       toe = doesUCSBSubjectExist(toe);
+       if (toe.error != null) {
+           return toe.error;
+       }
+
+       String body = mapper.writeValueAsString(toe.ucsbSubject);
+       return ResponseEntity.ok().body(body);
+   }
 
     @ApiOperation(value = "Create a new UCSBSubject JSON object")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -218,42 +220,42 @@ public class UCSBSubjectController extends ApiController {
 //     * value to
 //     * report this error condition.
 //     */
-//    public TodoOrError doesTodoExist(TodoOrError toe) {
-//
-//        Optional<Todo> optionalTodo = ucsbSubjectRepository.findById(toe.id);
-//
-//        if (optionalTodo.isEmpty()) {
-//            toe.error = ResponseEntity
-//                    .badRequest()
-//                    .body(String.format("todo with id %d not found", toe.id));
-//        } else {
-//            toe.todo = optionalTodo.get();
-//        }
-//        return toe;
-//    }
-//
-//    /**
-//     * Pre-conditions: toe.todo is non-null and refers to the todo with id toe.id,
-//     * and toe.error is null
-//     * <p>
-//     * Post-condition: if todo belongs to current user, then error is still null.
-//     * Otherwise error is a suitable
-//     * return value.
-//     */
-//    public TodoOrError doesTodoBelongToCurrentUser(TodoOrError toe) {
-//        CurrentUser currentUser = getCurrentUser();
-//        log.info("currentUser={}", currentUser);
-//
-//        Long currentUserId = currentUser.getUser().getId();
-//        Long todoUserId = toe.todo.getUser().getId();
-//        log.info("currentUserId={} todoUserId={}", currentUserId, todoUserId);
-//
-//        if (todoUserId != currentUserId) {
-//            toe.error = ResponseEntity
-//                    .badRequest()
-//                    .body(String.format("todo with id %d not found", toe.id));
-//        }
-//        return toe;
-//    }
+   public UCSBSubjectOrError doesUCSBSubjectExist(UCSBSubjectOrError toe) {
+
+       Optional<UCSBSubject> optionalUCSBSubject = ucsbSubjectRepository.findById(toe.id);
+
+       if (optionalUCSBSubject.isEmpty()) {
+           toe.error = ResponseEntity
+                   .badRequest()
+                   .body(String.format("UCSB Subject with id %d not found", toe.id));
+       } else {
+           toe.ucsbSubject = optionalUCSBSubject.get();
+       }
+       return toe;
+   }
+
+   /**
+    * Pre-conditions: toe.todo is non-null and refers to the todo with id toe.id,
+    * and toe.error is null
+    * <p>
+    * Post-condition: if todo belongs to current user, then error is still null.
+    * Otherwise error is a suitable
+    * return value.
+    */
+   public UCSBSubjectOrError doesUCSBSubjectBelongToCurrentUser(UCSBSubjectOrError toe) {
+       CurrentUser currentUser = getCurrentUser();
+       log.info("currentUser={}", currentUser);
+
+       Long currentUserId = currentUser.getUser().getId();
+       Long ucsbSubjectUserId = toe.ucsbSubject.getId();
+       log.info("currentUserId={} ucsbSubjectUserId={}", currentUserId, ucsbSubjectUserId);
+
+       if (ucsbSubjectUserId != currentUserId) {
+           toe.error = ResponseEntity
+                   .badRequest()
+                   .body(String.format("UCSB Subject with id %d not found", toe.id));
+       }
+       return toe;
+   }
 
 }

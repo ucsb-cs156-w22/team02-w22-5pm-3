@@ -77,12 +77,12 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 //                 .andExpect(status().is(403));
 //     }
 
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_ucsbSubjects_all__user_logged_in__returns_200() throws Exception {
-        mockMvc.perform(get("/api/UCSBSubjects/all"))
-                .andExpect(status().isOk());
-    }
+//     @WithMockUser(roles = { "USER" })
+//     @Test
+//     public void api_ucsbSubjects_all__user_logged_in__returns_200() throws Exception {
+//         mockMvc.perform(get("/api/UCSBSubjects/all"))
+//                 .andExpect(status().isOk());
+//     }
 
     // Authorization tests for /api/todos/post
 
@@ -92,178 +92,248 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(403));
     }
 
-/*
+
     // Tests with mocks for database actions
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_ucsbSubjects__user_logged_in__returns_a_ucsbSubject_that_exists() throws Exception {
 
-        // arrange
+
 
         User u = currentUserService.getCurrentUser().getUser();
-        UCSBSubject ucsbSubject1 = UCSBSubject.builder().title("UCSBSubject 1").details("UCSBSubject 1").done(false).user(u).id(7L).build();
-        when(ucsbSubjectRepository.findById(eq(7L))).thenReturn(Optional.of(todo1));
+        UCSBSubject ucsbSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(2L)
+                .build();
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/ucsbSubjects?id=7"))
+
+        when(ucsbSubjectRepository.findById(eq(2L))).thenReturn(Optional.of(ucsbSubject1));
+
+    
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/?id=2"))
                 .andExpect(status().isOk()).andReturn();
 
-        // assert
 
-        verify(todoRepository, times(1)).findById(eq(7L));
-        String expectedJson = mapper.writeValueAsString(todo1);
+
+        verify(ucsbSubjectRepository, times(1)).findById(eq(2L));
+        String expectedJson = mapper.writeValueAsString(ucsbSubject1);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_todos__user_logged_in__search_for_todo_that_does_not_exist() throws Exception {
-
-        // arrange
+    public void api_ucsbSubjects__user_logged_in__search_for_ucsbSubject_that_does_not_exist() throws Exception {
 
         User u = currentUserService.getCurrentUser().getUser();
 
-        when(todoRepository.findById(eq(7L))).thenReturn(Optional.empty());
+        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.empty());
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/todos?id=7"))
+
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
                 .andExpect(status().isBadRequest()).andReturn();
 
-        // assert
 
-        verify(todoRepository, times(1)).findById(eq(7L));
+        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 7 not found", responseString);
+        assertEquals("UCSB Subject with id 0 not found", responseString);
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_todos__user_logged_in__search_for_todo_that_belongs_to_another_user() throws Exception {
-
-        // arrange
+    public void api_ucsbSubjects__user_logged_in__search_for_ucsbSubject_that_belongs_to_another_user() throws Exception {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        Todo otherUsersTodo = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(13L)
+        UCSBSubject otherUsersUCSBSubject = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(0L)
                 .build();
 
-        when(todoRepository.findById(eq(13L))).thenReturn(Optional.of(otherUsersTodo));
+        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.of(otherUsersUCSBSubject));
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/todos?id=13"))
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
                 .andExpect(status().isBadRequest()).andReturn();
 
-        // assert
 
-        verify(todoRepository, times(1)).findById(eq(13L));
+
+        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 13 not found", responseString);
+        assertEquals("UCSB Subject with id 0 not found", responseString);
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos__admin_logged_in__search_for_todo_that_belongs_to_another_user() throws Exception {
-
-        // arrange
+    public void api_ucsbSubject__admin_logged_in__search_for_ucsbSubject_that_belongs_to_another_user() throws Exception {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        Todo otherUsersTodo = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(27L)
+        UCSBSubject otherUsersUCSBSubject = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(0L)
                 .build();
 
-        when(todoRepository.findById(eq(27L))).thenReturn(Optional.of(otherUsersTodo));
+        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.of(otherUsersUCSBSubject));
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/todos/admin?id=27"))
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
                 .andExpect(status().isOk()).andReturn();
 
-        // assert
+ 
 
-        verify(todoRepository, times(1)).findById(eq(27L));
-        String expectedJson = mapper.writeValueAsString(otherUsersTodo);
+        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
+        String expectedJson = mapper.writeValueAsString(otherUsersUCSBSubject);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos__admin_logged_in__search_for_todo_that_does_not_exist() throws Exception {
+    public void api_ucsbSubjects__admin_logged_in__search_for_ucsbSubject_that_does_not_exist() throws Exception {
 
-        // arrange
+        
 
-        when(todoRepository.findById(eq(29L))).thenReturn(Optional.empty());
+        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.empty());
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/todos/admin?id=29"))
+        
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
                 .andExpect(status().isBadRequest()).andReturn();
 
-        // assert
+        
 
-        verify(todoRepository, times(1)).findById(eq(29L));
+        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 29 not found", responseString);
+        assertEquals("UCSBSubject with id 0 not found", responseString);
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos_admin_all__admin_logged_in__returns_all_todos() throws Exception {
+    public void api_UCSBSubjects_admin_all__admin_logged_in__returns_all_UCSBSubjects() throws Exception {
 
-        // arrange
+    
 
         User u1 = User.builder().id(1L).build();
         User u2 = User.builder().id(2L).build();
         User u = currentUserService.getCurrentUser().getUser();
 
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(u1).id(1L).build();
-        Todo todo2 = Todo.builder().title("Todo 2").details("Todo 2").done(false).user(u2).id(2L).build();
-        Todo todo3 = Todo.builder().title("Todo 3").details("Todo 3").done(false).user(u).id(3L).build();
+        UCSBSubject UCSBSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
+                .build();
 
-        ArrayList<Todo> expectedTodos = new ArrayList<>();
-        expectedTodos.addAll(Arrays.asList(todo1, todo2, todo3));
+        UCSBSubject UCSBSubject2 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(2L)
+                .build();
 
-        when(todoRepository.findAll()).thenReturn(expectedTodos);
+        UCSBSubject UCSBSubject3 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(3L)
+                .build();
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/todos/admin/all"))
+        ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>();
+        expectedUCSBSubjects.addAll(Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
+
+        when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
+
+        
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/admin/all"))
                 .andExpect(status().isOk()).andReturn();
 
-        // assert
+        
 
-        verify(todoRepository, times(1)).findAll();
-        String expectedJson = mapper.writeValueAsString(expectedTodos);
+        verify(ucsbSubjectRepository, times(1)).findAll();
+        String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos_all__user_logged_in__returns_only_todos_for_user() throws Exception {
+//     @WithMockUser(roles = { "USER" })
+//     @Test
+//     public void api_todos_all__user_logged_in__returns_only_todos_for_user() throws Exception {
 
-        // arrange
+        
 
-        User thisUser = currentUserService.getCurrentUser().getUser();
+//         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(thisUser).id(1L).build();
-        Todo todo2 = Todo.builder().title("Todo 2").details("Todo 2").done(false).user(thisUser).id(2L).build();
+//         UCSBSubject UCSBSubject1 = UCSBSubject.builder()
+//                 .subjectCode("A")
+//                 .subjectTranslation("B")
+//                 .collegeCode("C")
+//                 .deptCode("D")
+//                 .relatedDeptCode("E")
+//                 .inactive(true)
+//                 .id(1L)
+//                 .build();
 
-        ArrayList<Todo> expectedTodos = new ArrayList<>();
-        expectedTodos.addAll(Arrays.asList(todo1, todo2));
-        when(todoRepository.findAllByUserId(thisUser.getId())).thenReturn(expectedTodos);
+//         UCSBSubject UCSBSubject2 = UCSBSubject.builder()
+//                 .subjectCode("A")
+//                 .subjectTranslation("B")
+//                 .collegeCode("C")
+//                 .deptCode("D")
+//                 .relatedDeptCode("E")
+//                 .inactive(true)
+//                 .id(2L)
+//                 .build();
 
-        // act
-        MvcResult response = mockMvc.perform(get("/api/todos/all"))
-                .andExpect(status().isOk()).andReturn();
+//         UCSBSubject UCSBSubject3 = UCSBSubject.builder()
+//                 .subjectCode("A")
+//                 .subjectTranslation("B")
+//                 .collegeCode("C")
+//                 .deptCode("D")
+//                 .relatedDeptCode("E")
+//                 .inactive(true)
+//                 .id(3L)
+//                 .build();
 
-        // assert
+//         ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>();
+//         expectedUCSBSubjects.addAll(Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
 
-        verify(todoRepository, times(1)).findAllByUserId(eq(thisUser.getId()));
-        String expectedJson = mapper.writeValueAsString(expectedTodos);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
-    }
-        */
+        
+//         when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
+
+        
+//         MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
+//                 .andExpect(status().isOk()).andReturn();
+
+        
+
+//         verify(ucsbSubjectRepository, times(1)).findAllByUserId(eq(thisUser.getId()));
+//         String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
+//         String responseString = response.getResponse().getContentAsString();
+//         assertEquals(expectedJson, responseString);
+//     }
+
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_UCSBSubjects_post__user_logged_in() throws Exception {

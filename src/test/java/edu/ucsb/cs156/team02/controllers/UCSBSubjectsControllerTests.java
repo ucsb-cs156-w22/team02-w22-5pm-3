@@ -109,19 +109,19 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
                 .deptCode("D")
                 .relatedDeptCode("E")
                 .inactive(true)
-                .id(2L)
+                .id(1L)
                 .build();
 
 
-        when(ucsbSubjectRepository.findById(eq(2L))).thenReturn(Optional.of(ucsbSubject1));
+        when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.of(ucsbSubject1));
 
     
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/?id=2"))
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/?id=1"))
                 .andExpect(status().isOk()).andReturn();
 
 
 
-        verify(ucsbSubjectRepository, times(1)).findById(eq(2L));
+        verify(ucsbSubjectRepository, times(1)).findById(eq(1L));
         String expectedJson = mapper.writeValueAsString(ucsbSubject1);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
@@ -133,74 +133,48 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
 
-        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.empty());
+        when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
 
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=1"))
                 .andExpect(status().isBadRequest()).andReturn();
 
 
-        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
+        verify(ucsbSubjectRepository, times(1)).findById(eq(1L));
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("UCSB Subject with id 0 not found", responseString);
+        assertEquals("UCSB Subject with id 1 not found", responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_ucsbSubjects__user_logged_in__search_for_ucsbSubject_that_belongs_to_another_user() throws Exception {
+    
 
-        User u = currentUserService.getCurrentUser().getUser();
-        User otherUser = User.builder().id(999L).build();
-        UCSBSubject otherUsersUCSBSubject = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(0L)
-                .build();
+//     @WithMockUser(roles = { "ADMIN" })
+//     @Test
+//     public void api_ucsbSubject__admin_logged_in__search_for_ucsbSubject_that_belongs_to_another_user() throws Exception {
 
-        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.of(otherUsersUCSBSubject));
+//         User u = currentUserService.getCurrentUser().getUser();
+//         User otherUser = User.builder().id(999L).build();
+//         UCSBSubject otherUsersUCSBSubject = UCSBSubject.builder()
+//                 .subjectCode("A")
+//                 .subjectTranslation("B")
+//                 .collegeCode("C")
+//                 .deptCode("D")
+//                 .relatedDeptCode("E")
+//                 .inactive(true)
+//                 .id(999L)
+//                 .build();
 
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
-                .andExpect(status().isBadRequest()).andReturn();
+//         when(ucsbSubjectRepository.findById(eq(999L))).thenReturn(Optional.of(otherUsersUCSBSubject));
 
-
-
-        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals("UCSB Subject with id 0 not found", responseString);
-    }
-
-    @WithMockUser(roles = { "ADMIN" })
-    @Test
-    public void api_ucsbSubject__admin_logged_in__search_for_ucsbSubject_that_belongs_to_another_user() throws Exception {
-
-        User u = currentUserService.getCurrentUser().getUser();
-        User otherUser = User.builder().id(999L).build();
-        UCSBSubject otherUsersUCSBSubject = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(0L)
-                .build();
-
-        when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.of(otherUsersUCSBSubject));
-
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
-                .andExpect(status().isOk()).andReturn();
+//         MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=999"))
+//                 .andExpect(status().isOk()).andReturn();
 
  
 
-        verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
-        String expectedJson = mapper.writeValueAsString(otherUsersUCSBSubject);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
-    }
+//         verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
+//         String expectedJson = mapper.writeValueAsString(otherUsersUCSBSubject);
+//         String responseString = response.getResponse().getContentAsString();
+//         assertEquals(expectedJson, responseString);
+//     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
@@ -224,6 +198,63 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void api_UCSBSubjects_admin_all__admin_logged_in__returns_all_UCSBSubjects() throws Exception {
+
+    
+
+        User u1 = User.builder().id(1L).build();
+        User u2 = User.builder().id(2L).build();
+        User u = currentUserService.getCurrentUser().getUser();
+
+        UCSBSubject UCSBSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
+                .build();
+
+        UCSBSubject UCSBSubject2 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(2L)
+                .build();
+
+        UCSBSubject UCSBSubject3 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(3L)
+                .build();
+
+        ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>();
+        expectedUCSBSubjects.addAll(Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
+
+        when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
+
+        
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
+                .andExpect(status().isOk()).andReturn();
+
+        
+
+        verify(ucsbSubjectRepository, times(1)).findAll();
+        String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void api_UCSBSubjects_user_all__user_logged_in__returns_all_UCSBSubjects() throws Exception {
 
     
 
@@ -334,9 +365,9 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 //         assertEquals(expectedJson, responseString);
 //     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_UCSBSubjects_post__user_logged_in() throws Exception {
+    public void api_UCSBSubjects_post__admin_logged_in() throws Exception {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();

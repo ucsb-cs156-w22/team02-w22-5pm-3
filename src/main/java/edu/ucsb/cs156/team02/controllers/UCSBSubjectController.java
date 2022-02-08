@@ -44,36 +44,16 @@ public class UCSBSubjectController extends ApiController {
     ObjectMapper mapper;
 
     @ApiOperation(value = "List all UCSB Subjects")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<UCSBSubject> allUCSBSubjects() {
         loggingService.logMethod();
         return ucsbSubjectRepository.findAll();
     }
 
-   @ApiOperation(value = "Get a single UCSBSubject (if it belongs to current user)")
+   @ApiOperation(value = "Get a single UCSBSubject")
    @PreAuthorize("hasRole('ROLE_USER')")
    @GetMapping("")
-   public ResponseEntity<String> getUCSBSubjectById(
-           @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
-       loggingService.logMethod();
-       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
-
-       toe = doesUCSBSubjectExist(toe);
-       if (toe.error != null) {
-           return toe.error;
-       }
-       toe = doesUCSBSubjectBelongToCurrentUser(toe);
-       if (toe.error != null) {
-           return toe.error;
-       }
-       String body = mapper.writeValueAsString(toe.ucsbSubject);
-       return ResponseEntity.ok().body(body);
-   }
-
-   @ApiOperation(value = "Get a single todo (no matter who it belongs to, admin only)")
-   @PreAuthorize("hasRole('ROLE_ADMIN')")
-   @GetMapping("/admin")
    public ResponseEntity<String> getUCSBSubjectById_admin(
            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
        loggingService.logMethod();
@@ -90,7 +70,7 @@ public class UCSBSubjectController extends ApiController {
    }
 
     @ApiOperation(value = "Create a new UCSBSubject JSON object")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public UCSBSubject postUCSBSubject(
             @ApiParam("subjectCode") @RequestParam String subjectCode,
@@ -243,20 +223,4 @@ public class UCSBSubjectController extends ApiController {
     * Otherwise error is a suitable
     * return value.
     */
-   public UCSBSubjectOrError doesUCSBSubjectBelongToCurrentUser(UCSBSubjectOrError toe) {
-       CurrentUser currentUser = getCurrentUser();
-       log.info("currentUser={}", currentUser);
-
-       Long currentUserId = currentUser.getUser().getId();
-       Long ucsbSubjectUserId = toe.ucsbSubject.getId();
-       log.info("currentUserId={} ucsbSubjectUserId={}", currentUserId, ucsbSubjectUserId);
-
-       if (ucsbSubjectUserId != currentUserId) {
-           toe.error = ResponseEntity
-                   .badRequest()
-                   .body(String.format("UCSB Subject with id %d not found", toe.id));
-       }
-       return toe;
-   }
-
 }

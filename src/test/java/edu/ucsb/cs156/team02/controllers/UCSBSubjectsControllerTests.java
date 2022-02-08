@@ -91,7 +91,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         mockMvc.perform(post("/api/UCSBSubjects/post"))
                 .andExpect(status().is(403));
     }
-}
+
 /*
     // Tests with mocks for database actions
 
@@ -263,37 +263,40 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
-
+        */
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_todos_post__user_logged_in() throws Exception {
+    public void api_UCSBSubjects_post__user_logged_in() throws Exception {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
 
-        Todo expectedTodo = Todo.builder()
-                .title("Test Title")
-                .details("Test Details")
-                .done(true)
-                .user(u)
+        UCSBSubject expectedUCSBSubject = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
                 .id(0L)
                 .build();
 
-        when(todoRepository.save(eq(expectedTodo))).thenReturn(expectedTodo);
+        when(ucsbSubjectRepository.save(eq(expectedUCSBSubject))).thenReturn(expectedUCSBSubject);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/todos/post?title=Test Title&details=Test Details&done=true")
+                post("/api/UCSBSubjects/post?id=0&subjectCode=A&subjectTranslation=B&collegeCode=C&deptCode=D&relatedDeptCode=E&inactive=true")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(todoRepository, times(1)).save(expectedTodo);
-        String expectedJson = mapper.writeValueAsString(expectedTodo);
+        verify(ucsbSubjectRepository, times(1)).save(expectedUCSBSubject);
+        String expectedJson = mapper.writeValueAsString(expectedUCSBSubject);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
-
+}
+        /*
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_todos__user_logged_in__delete_todo() throws Exception {

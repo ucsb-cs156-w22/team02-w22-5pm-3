@@ -44,6 +44,7 @@ public class UCSBSubjectController extends ApiController {
     ObjectMapper mapper;
 
     @ApiOperation(value = "List all UCSB Subjects")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public Iterable<UCSBSubject> allUCSBSubjects() {
         loggingService.logMethod();

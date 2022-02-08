@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+
+
 
 @Api(description = "UCSBSubjects")
 @RequestMapping("/api/UCSBSubjects/")
@@ -94,113 +97,57 @@ public class UCSBSubjectController extends ApiController {
         return ucsbSubjectRepository.save(ucsbSubject);
     }
 
-//    @ApiOperation(value = "Delete a Todo owned by this user")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @DeleteMapping("")
-//    public ResponseEntity<String> deleteTodo(
-//            @ApiParam("id") @RequestParam Long id) {
-//        loggingService.logMethod();
-//
-//        TodoOrError toe = new TodoOrError(id);
-//
-//        toe = doesTodoExist(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//
-//        toe = doesTodoBelongToCurrentUser(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//        ucsbSubjectRepository.deleteById(id);
-//        return ResponseEntity.ok().body(String.format("todo with id %d deleted", id));
-//
-//    }
-//
-//    @ApiOperation(value = "Delete another user's todo")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @DeleteMapping("/admin")
-//    public ResponseEntity<String> deleteTodo_Admin(
-//            @ApiParam("id") @RequestParam Long id) {
-//        loggingService.logMethod();
-//
-//        TodoOrError toe = new TodoOrError(id);
-//
-//        toe = doesTodoExist(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//
-//        ucsbSubjectRepository.deleteById(id);
-//
-//        return ResponseEntity.ok().body(String.format("todo with id %d deleted", id));
-//
-//    }
-//
-//    @ApiOperation(value = "Update a single todo (if it belongs to current user)")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @PutMapping("")
-//    public ResponseEntity<String> putTodoById(
-//            @ApiParam("id") @RequestParam Long id,
-//            @RequestBody @Valid Todo incomingTodo) throws JsonProcessingException {
-//        loggingService.logMethod();
-//
-//        CurrentUser currentUser = getCurrentUser();
-//        User user = currentUser.getUser();
-//
-//        TodoOrError toe = new TodoOrError(id);
-//
-//        toe = doesTodoExist(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//        toe = doesTodoBelongToCurrentUser(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//
-//        incomingTodo.setUser(user);
-//        ucsbSubjectRepository.save(incomingTodo);
-//
-//        String body = mapper.writeValueAsString(incomingTodo);
-//        return ResponseEntity.ok().body(body);
-//    }
-//
-//    @ApiOperation(value = "Update a single todo (regardless of ownership, admin only, can't change ownership)")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @PutMapping("/admin")
-//    public ResponseEntity<String> putTodoById_admin(
-//            @ApiParam("id") @RequestParam Long id,
-//            @RequestBody @Valid Todo incomingTodo) throws JsonProcessingException {
-//        loggingService.logMethod();
-//
-//        TodoOrError toe = new TodoOrError(id);
-//
-//        toe = doesTodoExist(toe);
-//        if (toe.error != null) {
-//            return toe.error;
-//        }
-//
-//        // Even the admin can't change the user; they can change other details
-//        // but not that.
-//
-//        User previousUser = toe.todo.getUser();
-//        incomingTodo.setUser(previousUser);
-//        ucsbSubjectRepository.save(incomingTodo);
-//
-//        String body = mapper.writeValueAsString(incomingTodo);
-//        return ResponseEntity.ok().body(body);
-//    }
-//
-//    /**
-//     * Pre-conditions: toe.id is value to look up, toe.todo and toe.error are null
-//     * <p>
-//     * Post-condition: if todo with id toe.id exists, toe.todo now refers to it, and
-//     * error is null.
-//     * Otherwise, todo with id toe.id does not exist, and error is a suitable return
-//     * value to
-//     * report this error condition.
-//     */
+   @ApiOperation(value = "Delete a UCSBSubject")
+   @PreAuthorize("hasRole('ROLE_ADMIN')")
+   @DeleteMapping("")
+   public ResponseEntity<String> deleteUCSBSubject(
+           @ApiParam("id") @RequestParam Long id) {
+       loggingService.logMethod();
+
+       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+
+       toe = doesUCSBSubjectExist(toe);
+       if (toe.error != null) {
+           return toe.error;
+       }
+
+       ucsbSubjectRepository.deleteById(id);
+       return ResponseEntity.ok().body(String.format("UCSBSubject with id %d deleted", id));
+
+   }
+
+   @ApiOperation(value = "Update a single UCSBSubject (regardless of ownership, admin only, can't change ownership)")
+   @PreAuthorize("hasRole('ROLE_ADMIN')")
+   @PutMapping("")
+   public ResponseEntity<String> putTodoById(
+           @ApiParam("id") @RequestParam Long id,
+           @RequestBody @Valid UCSBSubject incomingUCSBSubject) throws JsonProcessingException {
+       loggingService.logMethod();
+
+       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+
+       toe = doesUCSBSubjectExist(toe);
+       if (toe.error != null) {
+           return toe.error;
+       }
+
+       // Even the admin can't change the user; they can change other details
+       // but not that.
+
+       
+       String body = mapper.writeValueAsString(incomingUCSBSubject);
+       return ResponseEntity.ok().body(body);
+   }
+
+   /**
+    * Pre-conditions: toe.id is value to look up, toe.todo and toe.error are null
+    * <p>
+    * Post-condition: if todo with id toe.id exists, toe.todo now refers to it, and
+    * error is null.
+    * Otherwise, todo with id toe.id does not exist, and error is a suitable return
+    * value to
+    * report this error condition.
+    */
    public UCSBSubjectOrError doesUCSBSubjectExist(UCSBSubjectOrError toe) {
 
        Optional<UCSBSubject> optionalUCSBSubject = ucsbSubjectRepository.findById(toe.id);

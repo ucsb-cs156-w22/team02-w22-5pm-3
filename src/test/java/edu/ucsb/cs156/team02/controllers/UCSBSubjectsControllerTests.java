@@ -396,230 +396,90 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
-}
-        /*
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos__user_logged_in__delete_todo() throws Exception {
-        // arrange
-
-        User u = currentUserService.getCurrentUser().getUser();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(u).id(15L).build();
-        when(todoRepository.findById(eq(15L))).thenReturn(Optional.of(todo1));
-
-        // act
-        MvcResult response = mockMvc.perform(
-                delete("/api/todos?id=15")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
-
-        // assert
-        verify(todoRepository, times(1)).findById(15L);
-        verify(todoRepository, times(1)).deleteById(15L);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 15 deleted", responseString);
-    }
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos__user_logged_in__delete_todo_that_does_not_exist() throws Exception {
-        // arrange
-
-        User otherUser = User.builder().id(98L).build();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(15L).build();
-        when(todoRepository.findById(eq(15L))).thenReturn(Optional.empty());
-
-        // act
-        MvcResult response = mockMvc.perform(
-                delete("/api/todos?id=15")
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(todoRepository, times(1)).findById(15L);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 15 not found", responseString);
-    }
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos__user_logged_in__cannot_delete_todo_belonging_to_another_user() throws Exception {
-        // arrange
-
-        User otherUser = User.builder().id(98L).build();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(31L).build();
-        when(todoRepository.findById(eq(31L))).thenReturn(Optional.of(todo1));
-
-        // act
-        MvcResult response = mockMvc.perform(
-                delete("/api/todos?id=31")
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(todoRepository, times(1)).findById(31L);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 31 not found", responseString);
-    }
 
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos__admin_logged_in__delete_todo() throws Exception {
+    public void api_UCSBSubject__admin_logged_in__delete_UCSBSubject() throws Exception {
         // arrange
 
-        User otherUser = User.builder().id(98L).build();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(16L).build();
-        when(todoRepository.findById(eq(16L))).thenReturn(Optional.of(todo1));
+        UCSBSubject ucsbSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
+                .build();
+
+        when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.of(ucsbSubject1));
 
         // act
         MvcResult response = mockMvc.perform(
-                delete("/api/todos/admin?id=16")
+                delete("/api/UCSBSubjects?id=1")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(todoRepository, times(1)).findById(16L);
-        verify(todoRepository, times(1)).deleteById(16L);
+        verify(ucsbSubjectRepository, times(1)).findById(1L);
+        verify(ucsbSubjectRepository, times(1)).deleteById(1L);
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 16 deleted", responseString);
+        assertEquals("UCSBSubject with id 1 deleted", responseString);
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos__admin_logged_in__cannot_delete_todo_that_does_not_exist() throws Exception {
+    public void api_UCSBSubjects__admin_logged_in__cannot_delete_UCSBSubject_that_does_not_exist() throws Exception {
         // arrange
 
-        when(todoRepository.findById(eq(17L))).thenReturn(Optional.empty());
+        when(ucsbSubjectRepository.findById(eq(17L))).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(
-                delete("/api/todos/admin?id=17")
+                delete("/api/UCSBSubjects?id=17")
                         .with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
 
         // assert
-        verify(todoRepository, times(1)).findById(17L);
+        verify(ucsbSubjectRepository, times(1)).findById(17L);
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 17 not found", responseString);
+        assertEquals("UCSBSubject with id 17 not found", responseString);
     }
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos__user_logged_in__put_todo() throws Exception {
-        // arrange
-
-        User u = currentUserService.getCurrentUser().getUser();
-        User otherUser = User.builder().id(999).build();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(u).id(67L).build();
-        // We deliberately set the user information to another user
-        // This shoudl get ignored and overwritten with currrent user when todo is saved
-
-        Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).user(otherUser).id(67L).build();
-        Todo correctTodo = Todo.builder().title("New Title").details("New Details").done(true).user(u).id(67L).build();
-
-        String requestBody = mapper.writeValueAsString(updatedTodo);
-        String expectedReturn = mapper.writeValueAsString(correctTodo);
-
-        when(todoRepository.findById(eq(67L))).thenReturn(Optional.of(todo1));
-
-        // act
-        MvcResult response = mockMvc.perform(
-                put("/api/todos?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
-
-        // assert
-        verify(todoRepository, times(1)).findById(67L);
-        verify(todoRepository, times(1)).save(correctTodo); // should be saved with correct user
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedReturn, responseString);
-    }
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos__user_logged_in__cannot_put_todo_that_does_not_exist() throws Exception {
-        // arrange
-
-        Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).id(67L).build();
-
-        String requestBody = mapper.writeValueAsString(updatedTodo);
-
-        when(todoRepository.findById(eq(67L))).thenReturn(Optional.empty());
-
-        // act
-        MvcResult response = mockMvc.perform(
-                put("/api/todos?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(todoRepository, times(1)).findById(67L);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 67 not found", responseString);
-    }
-
-
-    @WithMockUser(roles = { "USER" })
-    @Test
-    public void api_todos__user_logged_in__cannot_put_todo_for_another_user() throws Exception {
-        // arrange
-
-        User otherUser = User.builder().id(98L).build();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(31L).build();
-        Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).id(31L).build();
-
-        when(todoRepository.findById(eq(31L))).thenReturn(Optional.of(todo1));
-
-        String requestBody = mapper.writeValueAsString(updatedTodo);
-
-        when(todoRepository.findById(eq(67L))).thenReturn(Optional.empty());
-
-        // act
-        MvcResult response = mockMvc.perform(
-                put("/api/todos?id=31")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(todoRepository, times(1)).findById(31L);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 31 not found", responseString);
-    }
-
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos__admin_logged_in__put_todo() throws Exception {
+    public void api_ucsbSubjects__admin_logged_in__put_ucsbSubject() throws Exception {
         // arrange
 
-        User otherUser = User.builder().id(255L).build();
-        Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(77L).build();
-        User yetAnotherUser = User.builder().id(512L).build();
+        UCSBSubject ucsbSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
+                .build();
         // We deliberately put the wrong user on the updated todo
         // We expect the controller to ignore this and keep the user the same
-        Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).user(yetAnotherUser).id(77L)
-                .build();
-        Todo correctTodo = Todo.builder().title("New Title").details("New Details").done(true).user(otherUser).id(77L)
+        UCSBSubject updatedUCSBSubject = UCSBSubject.builder()
+                .subjectCode("F")
+                .subjectTranslation("G")
+                .collegeCode("H")
+                .deptCode("I")
+                .relatedDeptCode("J")
+                .inactive(true)
+                .id(2L)
                 .build();
 
-        String requestBody = mapper.writeValueAsString(updatedTodo);
-        String expectedJson = mapper.writeValueAsString(correctTodo);
-
-        when(todoRepository.findById(eq(77L))).thenReturn(Optional.of(todo1));
+        String expectedJson = mapper.writeValueAsString(updatedUCSBSubject);
+        String requestBody = mapper.writeValueAsString(updatedUCSBSubject);
+        when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.of(ucsbSubject1));
 
         // act
         MvcResult response = mockMvc.perform(
-                put("/api/todos/admin?id=77")
+                put("/api/UCSBSubject?id=1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(requestBody)
@@ -627,28 +487,34 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(todoRepository, times(1)).findById(77L);
-        verify(todoRepository, times(1)).save(correctTodo);
+        verify(ucsbSubjectRepository, times(1)).findById(1L);
+        verify(ucsbSubjectRepository, times(1)).save(updatedUCSBSubject);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void api_todos__admin_logged_in__cannot_put_todo_that_does_not_exist() throws Exception {
+    public void api_ucsbSubjects__admin_logged_in__cannot_put_ucsbSubject_that_does_not_exist() throws Exception {
         // arrange
 
-        User otherUser = User.builder().id(345L).build();
-        Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).user(otherUser).id(77L)
+        UCSBSubject updatedUCSBSubject = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
                 .build();
 
-        String requestBody = mapper.writeValueAsString(updatedTodo);
+        String requestBody = mapper.writeValueAsString(updatedUCSBSubject);
 
-        when(todoRepository.findById(eq(77L))).thenReturn(Optional.empty());
+        when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(
-                put("/api/todos/admin?id=77")
+                put("/api/UCSBSubject?id=1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(requestBody)
@@ -656,10 +522,9 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
                 .andExpect(status().isBadRequest()).andReturn();
 
         // assert
-        verify(todoRepository, times(1)).findById(77L);
+        verify(ucsbSubjectRepository, times(1)).findById(1L);
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("todo with id 77 not found", responseString);
+        assertEquals("UCSBSubject with id 77 not found", responseString);
     }
 
 }
-*/

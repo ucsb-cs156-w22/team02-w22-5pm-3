@@ -4,20 +4,25 @@ import edu.ucsb.cs156.team02.repositories.UCSBRequirementRepository;
 import edu.ucsb.cs156.team02.testconfig.TestConfig;
 import edu.ucsb.cs156.team02.ControllerTestCase;
 import edu.ucsb.cs156.team02.entities.UCSBRequirement;
+import edu.ucsb.cs156.team02.entities.User;
 import edu.ucsb.cs156.team02.repositories.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -42,6 +47,7 @@ public class UCSBRequirementControllerTests extends ControllerTestCase {
 
         // arrange
 
+        User u = currentUserService.getCurrentUser().getUser();
         UCSBRequirement req1 = UCSBRequirement.builder()
                 .requirementCode("X")
                 .requirementTranslation("X")
@@ -72,6 +78,8 @@ public class UCSBRequirementControllerTests extends ControllerTestCase {
     public void api_reqs__user_logged_in__search_for_req_that_does_not_exist() throws Exception {
 
         // arrange
+
+        User u = currentUserService.getCurrentUser().getUser();
 
         when(ucsbRequirementRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
@@ -134,6 +142,59 @@ public class UCSBRequirementControllerTests extends ControllerTestCase {
         verify(ucsbRequirementRepository, times(1)).findById(eq(29L));
         String responseString = response.getResponse().getContentAsString();
         assertEquals("requirement with id 29 not found", responseString);
+    }
+
+    @Test
+    public void api_reqs__delete_req() throws Exception {
+        
+        // arrange
+
+        UCSBRequirement req1 = UCSBRequirement.builder()
+                .requirementCode("X")
+                .requirementTranslation("X")
+                .collegeCode("X")
+                .objCode("X")
+                .courseCount(0)
+                .units(0)
+                .inactive(false)
+                .id(42L).build();
+
+        when(ucsbRequirementRepository.findById(eq(42L))).thenReturn(Optional.of(req1));
+
+        // act
+
+        MvcResult response = mockMvc.perform(
+                delete("/api/UCSBRequirements?id=42")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(ucsbRequirementRepository, times(1)).findById(42L);
+        verify(ucsbRequirementRepository, times(1)).deleteById(42L);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals("requirement with id 42 deleted", responseString);
+    }
+
+    @Test
+    public void api_reqs__delete_req_that_does_not_exist() throws Exception {
+        
+        // arrange
+
+        when(ucsbRequirementRepository.findById(eq(42L))).thenReturn(Optional.empty());
+
+        // act
+
+        MvcResult response = mockMvc.perform(
+                delete("/api/UCSBRequirements?id=42")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+
+        verify(ucsbRequirementRepository, times(1)).findById(42L);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals("requirement with id 42 not found", responseString);
     }
 
 }

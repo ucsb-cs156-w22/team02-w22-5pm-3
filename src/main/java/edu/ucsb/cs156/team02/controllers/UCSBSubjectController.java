@@ -1,23 +1,21 @@
 package edu.ucsb.cs156.team02.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.Optional;
-import edu.ucsb.cs156.team02.entities.Todo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.team02.entities.UCSBSubject;
-import edu.ucsb.cs156.team02.models.CurrentUser;
+import edu.ucsb.cs156.team02.entities.User;
 import edu.ucsb.cs156.team02.repositories.UCSBSubjectRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
-
-
+import java.util.Optional;
 
 @Api(description = "UCSBSubjects")
 @RequestMapping("/api/UCSBSubjects/")
@@ -25,20 +23,21 @@ import javax.validation.Valid;
 @Slf4j
 public class UCSBSubjectController extends ApiController {
 
-//    /**
+    //    /**
 //     * This inner class helps us factor out some code for checking
 //     * whether todos exist, and whether they belong to the current user,
 //     * along with the error messages pertaining to those situations. It
 //     * bundles together the state needed for those checks.
 //     */
-   public class UCSBSubjectOrError {
-       Long id;
-       UCSBSubject ucsbSubject;
-       ResponseEntity<String> error;
-       public UCSBSubjectOrError(Long id) {
-           this.id = id;
-       }
-   }
+    public class UCSBSubjectOrError {
+        Long id;
+        UCSBSubject ucsbSubject;
+        ResponseEntity<String> error;
+
+        public UCSBSubjectOrError(Long id) {
+            this.id = id;
+        }
+    }
 
     @Autowired
     UCSBSubjectRepository ucsbSubjectRepository;
@@ -54,23 +53,23 @@ public class UCSBSubjectController extends ApiController {
         return ucsbSubjectRepository.findAll();
     }
 
-   @ApiOperation(value = "Get a single UCSBSubject")
-   @PreAuthorize("hasRole('ROLE_USER')")
-   @GetMapping("")
-   public ResponseEntity<String> getUCSBSubjectById_admin(
-           @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
-       loggingService.logMethod();
+    @ApiOperation(value = "Get a single UCSBSubject")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public ResponseEntity<String> getUCSBSubjectById_admin(
+            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
+        loggingService.logMethod();
 
-       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+        UCSBSubjectOrError usoe = new UCSBSubjectOrError(id);
 
-       toe = doesUCSBSubjectExist(toe);
-       if (toe.error != null) {
-           return toe.error;
-       }
+        usoe = doesUCSBSubjectExist(usoe);
+        if (usoe.error != null) {
+            return usoe.error;
+        }
 
-       String body = mapper.writeValueAsString(toe.ucsbSubject);
-       return ResponseEntity.ok().body(body);
-   }
+        String body = mapper.writeValueAsString(usoe.ucsbSubject);
+        return ResponseEntity.ok().body(body);
+    }
 
     @ApiOperation(value = "Create a new UCSBSubject JSON object")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -97,77 +96,66 @@ public class UCSBSubjectController extends ApiController {
         return ucsbSubjectRepository.save(ucsbSubject);
     }
 
-   @ApiOperation(value = "Delete a UCSBSubject")
-   @PreAuthorize("hasRole('ROLE_ADMIN')")
-   @DeleteMapping("")
-   public ResponseEntity<String> deleteUCSBSubject(
-           @ApiParam("id") @RequestParam Long id) {
-       loggingService.logMethod();
+    @ApiOperation(value = "Delete a UCSBSubject")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public ResponseEntity<String> deleteUCSBSubject(
+            @ApiParam("id") @RequestParam Long id) {
+        loggingService.logMethod();
 
-       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+        UCSBSubjectOrError usoe = new UCSBSubjectOrError(id);
 
-       toe = doesUCSBSubjectExist(toe);
-       if (toe.error != null) {
-           return toe.error;
-       }
+        usoe = doesUCSBSubjectExist(usoe);
+        if (usoe.error != null) {
+            return usoe.error;
+        }
 
-       ucsbSubjectRepository.deleteById(id);
-       return ResponseEntity.ok().body(String.format("UCSBSubject with id %d deleted", id));
+        ucsbSubjectRepository.deleteById(id);
+        return ResponseEntity.ok().body(String.format("UCSBSubject with id %d deleted", id));
 
-   }
+    }
 
-   @ApiOperation(value = "Update a single UCSBSubject (regardless of ownership, admin only, can't change ownership)")
-   @PreAuthorize("hasRole('ROLE_ADMIN')")
-   @PutMapping("")
-   public ResponseEntity<String> putTodoById(
-           @ApiParam("id") @RequestParam Long id,
-           @RequestBody @Valid UCSBSubject incomingUCSBSubject) throws JsonProcessingException {
-       loggingService.logMethod();
+    @ApiOperation(value = "Update a single UCSBSubject")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public ResponseEntity<String> putUCSBSubjectById(
+            @ApiParam("id") @RequestParam Long id,
+            @RequestBody @Valid UCSBSubject incomingUCSBSubject) throws JsonProcessingException {
+        loggingService.logMethod();
 
-       UCSBSubjectOrError toe = new UCSBSubjectOrError(id);
+        UCSBSubjectOrError usoe = new UCSBSubjectOrError(id);
 
-       toe = doesUCSBSubjectExist(toe);
-       if (toe.error != null) {
-           return toe.error;
-       }
+        usoe = doesUCSBSubjectExist(usoe);
+        if (usoe.error != null) {
+            return usoe.error;
+        }
 
-       // Even the admin can't change the user; they can change other details
-       // but not that.
+        ucsbSubjectRepository.save(incomingUCSBSubject);
 
-       
-       String body = mapper.writeValueAsString(incomingUCSBSubject);
-       return ResponseEntity.ok().body(body);
-   }
+        String body = mapper.writeValueAsString(incomingUCSBSubject);
+        return ResponseEntity.ok().body(body);
+    }
 
-   /**
-    * Pre-conditions: toe.id is value to look up, toe.todo and toe.error are null
-    * <p>
-    * Post-condition: if todo with id toe.id exists, toe.todo now refers to it, and
-    * error is null.
-    * Otherwise, todo with id toe.id does not exist, and error is a suitable return
-    * value to
-    * report this error condition.
-    */
-   public UCSBSubjectOrError doesUCSBSubjectExist(UCSBSubjectOrError toe) {
+    /**
+     * Pre-conditions: usoe.id is value to look up, usoe.todo and usoe.error are null
+     * <p>
+     * Post-condition: if todo with id usoe.id exists, usoe.todo now refers to it, and
+     * error is null.
+     * Otherwise, todo with id usoe.id does not exist, and error is a suitable return
+     * value to
+     * report this error condition.
+     */
+    public UCSBSubjectOrError doesUCSBSubjectExist(UCSBSubjectOrError usoe) {
 
-       Optional<UCSBSubject> optionalUCSBSubject = ucsbSubjectRepository.findById(toe.id);
+        Optional<UCSBSubject> optionalUCSBSubject = ucsbSubjectRepository.findById(usoe.id);
 
-       if (optionalUCSBSubject.isEmpty()) {
-           toe.error = ResponseEntity
-                   .badRequest()
-                   .body(String.format("UCSB Subject with id %d not found", toe.id));
-       } else {
-           toe.ucsbSubject = optionalUCSBSubject.get();
-       }
-       return toe;
-   }
-
-   /**
-    * Pre-conditions: toe.todo is non-null and refers to the todo with id toe.id,
-    * and toe.error is null
-    * <p>
-    * Post-condition: if todo belongs to current user, then error is still null.
-    * Otherwise error is a suitable
-    * return value.
-    */
+        if (optionalUCSBSubject.isEmpty()) {
+            usoe.error = ResponseEntity
+                    .badRequest()
+                    .body(String.format("UCSB Subject with id %d not found", usoe.id));
+        } else {
+            usoe.ucsbSubject = optionalUCSBSubject.get();
+        }
+        return usoe;
+    }
 }

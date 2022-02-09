@@ -39,52 +39,126 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
     @MockBean
     UserRepository userRepository;
 
-    // Authorization tests for /api/todos/admin/all
+    // tests for /api/ucsbSubjects/all
 
-//     @Test
-    
-//     public void api_ucsbSubjects_admin_all__logged_out__returns_403() throws Exception {
-//         mockMvc.perform(get("/api/UCSBSubjects/admin/all"))
-//                 .andExpect(status().is(403));
-//     }
+    @Test
+    public void api_ucsbSubjects_all__logged_out__returns_403() throws Exception {
+        mockMvc.perform(get("/api/UCSBSubjects/all"))
+                .andExpect(status().is(403));
+    }
 
-//     @WithMockUser(roles = { "USER" })
-//     @Test
-//     public void api_ucsbSubjects_admin_all__user_logged_in__returns_403() throws Exception {
-//         mockMvc.perform(get("/api/UCSBSubjects/admin/all"))
-//                 .andExpect(status().is(403));
-//     }
-
-//     @WithMockUser(roles = { "USER" })
-//     @Test
-//     public void api_ucsbSubjects_admin__user_logged_in__returns_403() throws Exception {
-//         mockMvc.perform(get("/api/UCSBSubjects/admin?id=7"))
-//                 .andExpect(status().is(403));
-//     }   
+    @Test
+    @WithMockUser(roles = {"USER"})
+    public void api_ucsbSubjects_all__user_logged_in__returns_200() throws Exception {
+        mockMvc.perform(get("/api/UCSBSubjects/all"))
+                .andExpect(status().is(403));
+    }
 
 
-//     @Test
-//     public void api_ucsbSubjects_admin_all__admin_logged_in__returns_200() throws Exception {
-//         mockMvc.perform(get("/api/ucsbSubjects/admin/all"))
-//                 .andExpect(status().isOk());
-//     }
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void api_UCSBSubjects_all__user_logged_in__returns_all_UCSBSubjects() throws Exception {
+        UCSBSubject UCSBSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
+                .build();
 
-    // Authorization tests for /api/todos/all
+        UCSBSubject UCSBSubject2 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(2L)
+                .build();
 
-//     @Test
-//     public void api_UCSBSubjects_all__logged_out__returns_403() throws Exception {
-//         mockMvc.perform(get("/api/UCSBSubjects/all"))
-//                 .andExpect(status().is(403));
-//     }
+        UCSBSubject UCSBSubject3 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(3L)
+                .build();
 
-//     @WithMockUser(roles = { "USER" })
-//     @Test
-//     public void api_ucsbSubjects_all__user_logged_in__returns_200() throws Exception {
-//         mockMvc.perform(get("/api/UCSBSubjects/all"))
-//                 .andExpect(status().isOk());
-//     }
+        ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>(
+                Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
 
-    // Authorization tests for /api/todos/post
+        when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
+
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(ucsbSubjectRepository, times(1)).findAll();
+        String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
+    public void api_ucsbSubjects_all__admin_logged_in__returns_200() throws Exception {
+        mockMvc.perform(get("/api/UCSBSubjects/all"))
+                .andExpect(status().is(403));
+    }
+
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void api_UCSBSubjects_all__admin_logged_in__returns_all_UCSBSubjects() throws Exception {
+
+        UCSBSubject UCSBSubject1 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(1L)
+                .build();
+
+        UCSBSubject UCSBSubject2 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(2L)
+                .build();
+
+        UCSBSubject UCSBSubject3 = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(3L)
+                .build();
+
+        ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>(
+                Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
+
+        when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
+
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(ucsbSubjectRepository, times(1)).findAll();
+        String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    // tests for /api/ucsbSubjects/post
 
     @Test
     public void api_ucsbSubjects_post__logged_out__returns_403() throws Exception {
@@ -92,16 +166,50 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(403));
     }
 
+    @Test
+    @WithMockUser(roles = {"USER"})
+    public void api_ucsbSubjects_post__user_logged_in__returns_403() throws Exception {
+        mockMvc.perform(post("/api/UCSBSubjects/post"))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void api_UCSBSubjects_post__admin_logged_in() throws Exception {
+        // arrange
+
+        UCSBSubject expectedUCSBSubject = UCSBSubject.builder()
+                .subjectCode("A")
+                .subjectTranslation("B")
+                .collegeCode("C")
+                .deptCode("D")
+                .relatedDeptCode("E")
+                .inactive(true)
+                .id(0L)
+                .build();
+
+        when(ucsbSubjectRepository.save(eq(expectedUCSBSubject))).thenReturn(expectedUCSBSubject);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                        post("/api/UCSBSubjects/post?id=0&subjectCode=A&subjectTranslation=B&collegeCode=C&deptCode=D&relatedDeptCode=E&inactive=true")
+                                .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(ucsbSubjectRepository, times(1)).save(expectedUCSBSubject);
+        String expectedJson = mapper.writeValueAsString(expectedUCSBSubject);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
 
     // Tests with mocks for database actions
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_ucsbSubjects__user_logged_in__returns_a_ucsbSubject_that_exists() throws Exception {
 
-
-
-        User u = currentUserService.getCurrentUser().getUser();
         UCSBSubject ucsbSubject1 = UCSBSubject.builder()
                 .subjectCode("A")
                 .subjectTranslation("B")
@@ -115,10 +223,9 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.of(ucsbSubject1));
 
-    
+
         MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/?id=1"))
                 .andExpect(status().isOk()).andReturn();
-
 
 
         verify(ucsbSubjectRepository, times(1)).findById(eq(1L));
@@ -127,7 +234,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_ucsbSubjects__user_logged_in__search_for_ucsbSubject_that_does_not_exist() throws Exception {
 
@@ -145,7 +252,6 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         assertEquals("UCSB Subject with id 1 not found", responseString);
     }
 
-    
 
 //     @WithMockUser(roles = { "ADMIN" })
 //     @Test
@@ -168,7 +274,6 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 //         MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=999"))
 //                 .andExpect(status().isOk()).andReturn();
 
- 
 
 //         verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
 //         String expectedJson = mapper.writeValueAsString(otherUsersUCSBSubject);
@@ -176,229 +281,25 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 //         assertEquals(expectedJson, responseString);
 //     }
 
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void api_ucsbSubjects__admin_logged_in__search_for_ucsbSubject_that_does_not_exist() throws Exception {
 
-        
 
         when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.empty());
 
-        
+
         MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
                 .andExpect(status().isBadRequest()).andReturn();
 
-        
 
         verify(ucsbSubjectRepository, times(1)).findById(eq(0L));
         String responseString = response.getResponse().getContentAsString();
         assertEquals("UCSBSubject with id 0 not found", responseString);
     }
 
-    @WithMockUser(roles = { "ADMIN" })
-    @Test
-    public void api_UCSBSubjects_admin_all__admin_logged_in__returns_all_UCSBSubjects() throws Exception {
 
-    
-
-        User u1 = User.builder().id(1L).build();
-        User u2 = User.builder().id(2L).build();
-        User u = currentUserService.getCurrentUser().getUser();
-
-        UCSBSubject UCSBSubject1 = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(1L)
-                .build();
-
-        UCSBSubject UCSBSubject2 = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(2L)
-                .build();
-
-        UCSBSubject UCSBSubject3 = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(3L)
-                .build();
-
-        ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>();
-        expectedUCSBSubjects.addAll(Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
-
-        when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
-
-        
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
-                .andExpect(status().isOk()).andReturn();
-
-        
-
-        verify(ucsbSubjectRepository, times(1)).findAll();
-        String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
-    }
-
-        @WithMockUser(roles = { "USER" })
-        @Test
-        public void api_UCSBSubjects_user_all__user_logged_in__returns_all_UCSBSubjects() throws Exception {
-
-    
-
-        User u1 = User.builder().id(1L).build();
-        User u2 = User.builder().id(2L).build();
-        User u = currentUserService.getCurrentUser().getUser();
-
-        UCSBSubject UCSBSubject1 = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(1L)
-                .build();
-
-        UCSBSubject UCSBSubject2 = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(2L)
-                .build();
-
-        UCSBSubject UCSBSubject3 = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(3L)
-                .build();
-
-        ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>();
-        expectedUCSBSubjects.addAll(Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
-
-        when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
-
-        
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
-                .andExpect(status().isOk()).andReturn();
-
-        
-
-        verify(ucsbSubjectRepository, times(1)).findAll();
-        String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
-    }
-
-//     @WithMockUser(roles = { "USER" })
-//     @Test
-//     public void api_todos_all__user_logged_in__returns_only_todos_for_user() throws Exception {
-
-        
-
-//         User thisUser = currentUserService.getCurrentUser().getUser();
-
-//         UCSBSubject UCSBSubject1 = UCSBSubject.builder()
-//                 .subjectCode("A")
-//                 .subjectTranslation("B")
-//                 .collegeCode("C")
-//                 .deptCode("D")
-//                 .relatedDeptCode("E")
-//                 .inactive(true)
-//                 .id(1L)
-//                 .build();
-
-//         UCSBSubject UCSBSubject2 = UCSBSubject.builder()
-//                 .subjectCode("A")
-//                 .subjectTranslation("B")
-//                 .collegeCode("C")
-//                 .deptCode("D")
-//                 .relatedDeptCode("E")
-//                 .inactive(true)
-//                 .id(2L)
-//                 .build();
-
-//         UCSBSubject UCSBSubject3 = UCSBSubject.builder()
-//                 .subjectCode("A")
-//                 .subjectTranslation("B")
-//                 .collegeCode("C")
-//                 .deptCode("D")
-//                 .relatedDeptCode("E")
-//                 .inactive(true)
-//                 .id(3L)
-//                 .build();
-
-//         ArrayList<UCSBSubject> expectedUCSBSubjects = new ArrayList<>();
-//         expectedUCSBSubjects.addAll(Arrays.asList(UCSBSubject1, UCSBSubject2, UCSBSubject3));
-
-        
-//         when(ucsbSubjectRepository.findAll()).thenReturn(expectedUCSBSubjects);
-
-        
-//         MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/all"))
-//                 .andExpect(status().isOk()).andReturn();
-
-        
-
-//         verify(ucsbSubjectRepository, times(1)).findAllByUserId(eq(thisUser.getId()));
-//         String expectedJson = mapper.writeValueAsString(expectedUCSBSubjects);
-//         String responseString = response.getResponse().getContentAsString();
-//         assertEquals(expectedJson, responseString);
-//     }
-
-    @WithMockUser(roles = { "ADMIN" })
-    @Test
-    public void api_UCSBSubjects_post__admin_logged_in() throws Exception {
-        // arrange
-
-        User u = currentUserService.getCurrentUser().getUser();
-
-        UCSBSubject expectedUCSBSubject = UCSBSubject.builder()
-                .subjectCode("A")
-                .subjectTranslation("B")
-                .collegeCode("C")
-                .deptCode("D")
-                .relatedDeptCode("E")
-                .inactive(true)
-                .id(0L)
-                .build();
-
-        when(ucsbSubjectRepository.save(eq(expectedUCSBSubject))).thenReturn(expectedUCSBSubject);
-
-        // act
-        MvcResult response = mockMvc.perform(
-                post("/api/UCSBSubjects/post?id=0&subjectCode=A&subjectTranslation=B&collegeCode=C&deptCode=D&relatedDeptCode=E&inactive=true")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
-
-        // assert
-        verify(ucsbSubjectRepository, times(1)).save(expectedUCSBSubject);
-        String expectedJson = mapper.writeValueAsString(expectedUCSBSubject);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
-    }
-
-
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void api_UCSBSubject__admin_logged_in__delete_UCSBSubject() throws Exception {
         // arrange
@@ -417,8 +318,8 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                delete("/api/UCSBSubjects?id=1")
-                        .with(csrf()))
+                        delete("/api/UCSBSubjects?id=1")
+                                .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -428,7 +329,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         assertEquals("UCSBSubject with id 1 deleted", responseString);
     }
 
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void api_UCSBSubjects__admin_logged_in__cannot_delete_UCSBSubject_that_does_not_exist() throws Exception {
         // arrange
@@ -437,8 +338,8 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                delete("/api/UCSBSubjects?id=17")
-                        .with(csrf()))
+                        delete("/api/UCSBSubjects?id=17")
+                                .with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -447,7 +348,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         assertEquals("UCSBSubject with id 17 not found", responseString);
     }
 
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void api_ucsbSubjects__admin_logged_in__put_ucsbSubject() throws Exception {
         // arrange
@@ -470,7 +371,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
                 .deptCode("I")
                 .relatedDeptCode("J")
                 .inactive(true)
-                .id(2L)
+                .id(1L)
                 .build();
 
         String expectedJson = mapper.writeValueAsString(updatedUCSBSubject);
@@ -479,11 +380,11 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                put("/api/UCSBSubject?id=1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
+                        put("/api/UCSBSubject?id=1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -493,7 +394,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void api_ucsbSubjects__admin_logged_in__cannot_put_ucsbSubject_that_does_not_exist() throws Exception {
         // arrange
@@ -514,11 +415,11 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                put("/api/UCSBSubject?id=1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
+                        put("/api/UCSBSubject?id=1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
 
         // assert

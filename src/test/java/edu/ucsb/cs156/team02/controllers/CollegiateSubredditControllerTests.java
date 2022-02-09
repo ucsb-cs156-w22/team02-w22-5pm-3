@@ -49,6 +49,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
     }
 
 
+
     // Tests with mocks for database actions on user on GET(Index) and Post(Create)
 
 
@@ -94,6 +95,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+
 
 
     // Tests for Get(Show) Method
@@ -302,6 +304,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
     }
 
 
+
     @Test
     public void api_CollegiateSubreddit__delete_exist() throws Exception {
 
@@ -344,6 +347,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals("subreddit with id 123 not found", responseString);
     }
+
 
 
 }

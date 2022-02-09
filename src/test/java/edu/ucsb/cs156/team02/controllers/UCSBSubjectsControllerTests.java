@@ -380,7 +380,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                        put("/api/UCSBSubject/?id=1")
+                        put("/api/UCSBSubjects/?id=1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8")
                                 .content(requestBody)
@@ -415,7 +415,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                        put("/api/UCSBSubject/?id=1")
+                        put("/api/UCSBSubjects/?id=1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8")
                                 .content(requestBody)
@@ -425,7 +425,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         // assert
         verify(ucsbSubjectRepository, times(1)).findById(1L);
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("UCSBSubject with id 77 not found", responseString);
+        assertEquals("UCSB Subject with id 1 not found", responseString);
     }
 
 }

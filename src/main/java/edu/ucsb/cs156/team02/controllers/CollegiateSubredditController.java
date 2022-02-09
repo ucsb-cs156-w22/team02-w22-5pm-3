@@ -34,6 +34,7 @@ import java.util.Optional;
 @Slf4j
 public class CollegiateSubredditController extends ApiController{
     
+
     public class CollegiateSubredditOrError {
         Long id;
         CollegiateSubreddit subreddit;
@@ -78,6 +79,7 @@ public class CollegiateSubredditController extends ApiController{
         CollegiateSubreddit savedcollegiateSubreddit = collegiateSubredditRepository.save(collegiateSubreddit);
         return savedcollegiateSubreddit;
     }
+
 
     @ApiOperation(value = "Get a single subreddit")
     // @PreAuthorize("hasRole('ROLE_USER')")
@@ -137,4 +139,5 @@ public class CollegiateSubredditController extends ApiController{
         String body = mapper.writeValueAsString(oldSubreddit);
         return ResponseEntity.ok().body(body);
     }
+
 }

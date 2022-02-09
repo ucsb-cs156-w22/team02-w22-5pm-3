@@ -51,7 +51,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     public void api_ucsbSubjects_all__user_logged_in__returns_200() throws Exception {
         mockMvc.perform(get("/api/UCSBSubjects/all"))
-                .andExpect(status().is(403));
+                .andExpect(status().is(200));
     }
 
 
@@ -243,7 +243,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         when(ucsbSubjectRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
 
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=1"))
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/?id=1"))
                 .andExpect(status().isBadRequest()).andReturn();
 
 
@@ -289,7 +289,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
         when(ucsbSubjectRepository.findById(eq(0L))).thenReturn(Optional.empty());
 
 
-        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects?id=0"))
+        MvcResult response = mockMvc.perform(get("/api/UCSBSubjects/?id=0"))
                 .andExpect(status().isBadRequest()).andReturn();
 
 
@@ -318,7 +318,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                        delete("/api/UCSBSubjects?id=1")
+                        delete("/api/UCSBSubjects/?id=1")
                                 .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
@@ -338,14 +338,14 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                        delete("/api/UCSBSubjects?id=17")
+                        delete("/api/UCSBSubjects/?id=17")
                                 .with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         verify(ucsbSubjectRepository, times(1)).findById(17L);
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("UCSBSubject with id 17 not found", responseString);
+        assertEquals("UCSB Subject with id 17 not found", responseString);
     }
 
     @WithMockUser(roles = {"ADMIN"})
@@ -380,7 +380,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                        put("/api/UCSBSubject?id=1")
+                        put("/api/UCSBSubject/?id=1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8")
                                 .content(requestBody)
@@ -415,7 +415,7 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                        put("/api/UCSBSubject?id=1")
+                        put("/api/UCSBSubject/?id=1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8")
                                 .content(requestBody)

@@ -3,7 +3,6 @@ package edu.ucsb.cs156.team02.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.team02.entities.UCSBSubject;
-import edu.ucsb.cs156.team02.entities.User;
 import edu.ucsb.cs156.team02.repositories.UCSBSubjectRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,7 +55,7 @@ public class UCSBSubjectController extends ApiController {
     @ApiOperation(value = "Get a single UCSBSubject")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
-    public ResponseEntity<String> getUCSBSubjectById_admin(
+    public ResponseEntity<String> getUCSBSubjectById(
             @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
         loggingService.logMethod();
 

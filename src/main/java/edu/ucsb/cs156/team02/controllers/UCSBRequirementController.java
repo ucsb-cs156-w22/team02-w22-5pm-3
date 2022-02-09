@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -99,6 +100,40 @@ public class UCSBRequirementController extends ApiController {
         return ResponseEntity.ok().body(body);
     }
 
+    @ApiOperation(value = "List all requirements")
+    @GetMapping("/all")
+    public Iterable<UCSBRequirement> allUCSBRequirements() {
+        loggingService.logMethod();
+        Iterable<UCSBRequirement> reqs = ucsbRequirementRepository.findAll();
+        return reqs;
+    }
+
+    @ApiOperation(value = "Create a new requirement")
+    @PostMapping("/post")
+    public UCSBRequirement postUcsbRequirement(
+            @ApiParam("requirementCode") @RequestParam String requirementCode,
+            @ApiParam("requirementTranslation") @RequestParam String requirementTranslation,
+            @ApiParam("collegeCode") @RequestParam String collegeCode,
+            @ApiParam("objCode") @RequestParam String objCode,
+            @ApiParam("courseCount") @RequestParam int courseCount,
+            @ApiParam("units") @RequestParam int units,
+            @ApiParam("inactive") @RequestParam Boolean inactive,
+            @ApiParam("id") @RequestParam long id) {
+        loggingService.logMethod();
+
+        UCSBRequirement req = new UCSBRequirement();
+        req.setRequirementCode(requirementCode);
+        req.setRequirementTranslation(requirementTranslation);
+        req.setCollegeCode(collegeCode);
+        req.setObjCode(objCode);
+        req.setCourseCount(courseCount);
+        req.setUnits(units);
+        req.setInactive(inactive);
+        req.setId(id);
+        
+        UCSBRequirement savedReq = ucsbRequirementRepository.save(req);
+        return savedReq;
+    }
     
 
     public UCSBRequirementOrError doesUCSBRequirementExist(UCSBRequirementOrError roe) {

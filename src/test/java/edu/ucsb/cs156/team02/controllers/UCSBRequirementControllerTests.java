@@ -279,4 +279,88 @@ public class UCSBRequirementControllerTests extends ControllerTestCase {
         assertEquals("requirement with id 42 not found", responseString);
     }
 
+    @Test
+    public void api_reqs_all__returns_all_reqs() throws Exception {
+
+        // arrange
+
+        UCSBRequirement req1 = UCSBRequirement.builder()
+                .requirementCode("A")
+                .requirementTranslation("A")
+                .collegeCode("A")
+                .objCode("A")
+                .courseCount(1)
+                .units(1)
+                .inactive(false)
+                .id(1L).build();
+
+        UCSBRequirement req2 = UCSBRequirement.builder()
+                .requirementCode("B")
+                .requirementTranslation("B")
+                .collegeCode("B")
+                .objCode("B")
+                .courseCount(2)
+                .units(2)
+                .inactive(false)
+                .id(2L).build();
+
+        UCSBRequirement req3 = UCSBRequirement.builder()
+                .requirementCode("C")
+                .requirementTranslation("C")
+                .collegeCode("C")
+                .objCode("C")
+                .courseCount(3)
+                .units(3)
+                .inactive(false)
+                .id(3L).build();
+
+        ArrayList<UCSBRequirement> expectedReqs = new ArrayList<>();
+        expectedReqs.addAll(Arrays.asList(req1, req2, req3));
+
+        when(ucsbRequirementRepository.findAll()).thenReturn(expectedReqs);
+
+        // act
+
+        MvcResult response = mockMvc.perform(get("/api/UCSBRequirements/all"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(ucsbRequirementRepository, times(1)).findAll();
+        String expectedJson = mapper.writeValueAsString(expectedReqs);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @Test
+    public void api_reqs_post() throws Exception {
+        
+        // arrange
+
+        UCSBRequirement expectedReq = UCSBRequirement.builder()
+                .requirementCode("A")
+                .requirementTranslation("B")
+                .collegeCode("C")
+                .objCode("D")
+                .courseCount(100)
+                .units(100)
+                .inactive(true)
+                .id(42L).build();
+
+        when(ucsbRequirementRepository.save(eq(expectedReq))).thenReturn(expectedReq);
+
+        // act
+
+        MvcResult response = mockMvc.perform(
+                post("/api/UCSBRequirements/post?requirementCode=A&requirementTranslation=B&collegeCode=C&objCode=D&courseCount=100&units=100&inactive=true&id=42")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(ucsbRequirementRepository, times(1)).save(expectedReq);
+        String expectedJson = mapper.writeValueAsString(expectedReq);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
 }

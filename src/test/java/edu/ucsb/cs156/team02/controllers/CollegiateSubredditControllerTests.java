@@ -49,8 +49,13 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
     }
 
 
+    // Tests with mocks for database actions on user
+
+  
+
 
     // Tests with mocks for database actions on user on GET(Index) and Post(Create)
+
 
 
     // @WithMockUser(roles = { "USER" })
@@ -175,7 +180,9 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
     }
 
 
+
     // Tests for Get(show) on admin
+
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
@@ -218,6 +225,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals("subreddit with id 7 not found", responseString);
     }
+
 
 
     // Tests for Put(edit) method

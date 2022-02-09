@@ -243,7 +243,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
                                                                             .build();
         
 
-        String requestBody = mapper.writeValueAsString(initialCollegiateSubreddit);
+        String requestBody = mapper.writeValueAsString(updatedCollegiateSubreddit);
         String expectedReturn = mapper.writeValueAsString(updatedCollegiateSubreddit);
 
         when(collegiateSubredditRepository.findById(eq(10L))).thenReturn(Optional.of(initialCollegiateSubreddit));

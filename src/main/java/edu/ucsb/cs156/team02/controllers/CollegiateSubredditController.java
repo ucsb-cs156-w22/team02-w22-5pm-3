@@ -127,10 +127,14 @@ public class CollegiateSubredditController extends ApiController{
         if (coe.error != null) {
             return coe.error;
         }
+        CollegiateSubreddit oldSubreddit = coe.subreddit;
+        oldSubreddit.setName(incomingCollegiateSubreddit.getName());
+        oldSubreddit.setLocation(incomingCollegiateSubreddit.getLocation());
+        oldSubreddit.setSubreddit(incomingCollegiateSubreddit.getSubreddit());
 
-        collegiateSubredditRepository.save(incomingCollegiateSubreddit);
+        collegiateSubredditRepository.save(oldSubreddit);
 
-        String body = mapper.writeValueAsString(incomingCollegiateSubreddit);
+        String body = mapper.writeValueAsString(oldSubreddit);
         return ResponseEntity.ok().body(body);
     }
 }

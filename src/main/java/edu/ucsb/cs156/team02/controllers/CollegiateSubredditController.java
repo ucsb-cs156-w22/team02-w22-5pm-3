@@ -137,4 +137,22 @@ public class CollegiateSubredditController extends ApiController{
         String body = mapper.writeValueAsString(oldSubreddit);
         return ResponseEntity.ok().body(body);
     }
+
+
+    @ApiOperation(value = "Delete a subreddit by ID")
+    @DeleteMapping("")
+    public ResponseEntity<String> deleteCollegiateSubreddit(
+            @ApiParam("id") @RequestParam Long id) {
+        loggingService.logMethod();
+
+        CollegiateSubredditOrError soe = new CollegiateSubredditOrError(id);
+
+        soe = doesCollegiateSubredditExist(soe);
+        if (soe.error != null) {
+            return soe.error;
+        }
+
+        collegiateSubredditRepository.deleteById(id);
+        return ResponseEntity.ok().body(String.format("subreddit with id %d deleted", id));
+    }
 }

@@ -298,4 +298,29 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         assertEquals("subreddit with id 10 not found", responseString);
     }
 
+
+    
+
+//     @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_collegiateSubreddit__user_logged_in__delete_subreddit_that_does_not_exist() throws Exception {
+        // arrange
+
+        User otherUser = User.builder().id(98L).build();
+
+        CollegiateSubreddit collegiateSubreddit1 = CollegiateSubreddit.builder().name("CollegiateSubreddit1").location("CollegiateSubreddit1").subreddit("CollegiateSubreddit1").id(123L).build();
+        when(collegiateSubredditRepository.findById(eq(123L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/collegiateSubreddits?id=123")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(collegiateSubredditRepository, times(1)).findById(123L);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals("subreddit with id 123 not found", responseString);
+    }
+
 }

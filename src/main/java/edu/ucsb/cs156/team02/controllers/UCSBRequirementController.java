@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Api(description = "UCSB Requirements")
@@ -74,6 +77,26 @@ public class UCSBRequirementController extends ApiController {
         ucsbRequirementRepository.deleteById(id);
         return ResponseEntity.ok().body(String.format("requirement with id %d deleted", id));
 
+    }
+
+    @ApiOperation(value = "Update a single requirement by ID")
+    @PutMapping("")
+    public ResponseEntity<String> putTodoById(
+            @ApiParam("id") @RequestParam Long id,
+            @RequestBody @Valid UCSBRequirement incomingUCSBRequirement) throws JsonProcessingException {
+        loggingService.logMethod();
+
+        UCSBRequirementOrError roe = new UCSBRequirementOrError(id);
+
+        roe = doesUCSBRequirementExist(roe);
+        if (roe.error != null) {
+            return roe.error;
+        }
+
+        ucsbRequirementRepository.save(incomingUCSBRequirement);
+
+        String body = mapper.writeValueAsString(incomingUCSBRequirement);
+        return ResponseEntity.ok().body(body);
     }
 
     

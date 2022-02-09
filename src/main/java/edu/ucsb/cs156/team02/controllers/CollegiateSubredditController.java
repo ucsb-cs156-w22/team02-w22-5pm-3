@@ -34,6 +34,7 @@ import java.util.Optional;
 @Slf4j
 public class CollegiateSubredditController extends ApiController{
     
+
     public class CollegiateSubredditOrError {
         Long id;
         CollegiateSubreddit subreddit;
@@ -43,6 +44,7 @@ public class CollegiateSubredditController extends ApiController{
             this.id = id;
         }
     }
+
 
     @Autowired
     CollegiateSubredditRepository collegiateSubredditRepository;
@@ -78,6 +80,7 @@ public class CollegiateSubredditController extends ApiController{
         CollegiateSubreddit savedcollegiateSubreddit = collegiateSubredditRepository.save(collegiateSubreddit);
         return savedcollegiateSubreddit;
     }
+
 
     @ApiOperation(value = "Get a single subreddit")
     // @PreAuthorize("hasRole('ROLE_USER')")
@@ -155,4 +158,5 @@ public class CollegiateSubredditController extends ApiController{
         collegiateSubredditRepository.deleteById(id);
         return ResponseEntity.ok().body(String.format("subreddit with id %d deleted", id));
     }
+
 }

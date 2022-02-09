@@ -51,6 +51,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
 
     // Tests with mocks for database actions on user on GET(Index) and Post(Create)
 
+
     // @WithMockUser(roles = { "USER" })
     @Test
     public void api_collegiateSubreddit_user_get_all() throws Exception {
@@ -96,6 +97,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
 
 
     // Tests for Get(Show) Method
+
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_collegiateSubreddit_user_post__user_logged_in() throws Exception {
@@ -124,6 +126,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+
 
     @WithMockUser(roles = { "USER" })
     @Test
@@ -322,5 +325,6 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals("subreddit with id 123 not found", responseString);
     }
+
 
 }

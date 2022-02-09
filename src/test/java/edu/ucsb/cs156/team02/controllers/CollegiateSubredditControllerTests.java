@@ -51,6 +51,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
 
     // Tests with mocks for database actions on user
 
+  
     // @WithMockUser(roles = { "USER" })
     @Test
     public void api_collegiateSubreddit_user_get_all() throws Exception {
@@ -122,6 +123,7 @@ public class CollegiateSubredditControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+
 
     @WithMockUser(roles = { "USER" })
     @Test
